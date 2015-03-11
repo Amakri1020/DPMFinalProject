@@ -8,11 +8,11 @@ public class Robot {
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
 	
-	//public static Odometer odo;
+	public static Odometer odo;
 	
 	public static void main(String[] args) {
-		//odo = new Odometer();
-		//odo.start();
+		odo = new Odometer();
+		odo.start();
 		
 		process();
 	}

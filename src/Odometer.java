@@ -1,12 +1,10 @@
-import lejos.nxt.Motor;
-
 /*
  * Odometer.java
  */
 
 public class Odometer extends Thread {
 	
-	//robot position
+	//Robot's position
 	private double x, y, theta;
 	
     public static final int SINTERVAL = 50;  /* A 20Hz sampling rate */
@@ -17,13 +15,13 @@ public class Odometer extends Thread {
     public static int nowTachoL;           /* Current tacho L */
     public static int nowTachoR;           /* Current tacho R */
 
-	// odometer update period, in ms
+	//Odometer update period, in ms
 	private static final long ODOMETER_PERIOD = 25;
 
-	// lock object for mutual exclusion
+	//Lock object for mutual exclusion
 	private Object lock;
 
-	// default constructor
+	//Default constructor
 	public Odometer() {
 		x = 0.0;
 		y = 0.0;
@@ -33,7 +31,7 @@ public class Odometer extends Thread {
 		lock = new Object();
 	}
 
-	// run method (required for Thread)
+	//Run method (required for Thread)
 	public void run() {
 		long updateStart, updateEnd;
 
@@ -79,11 +77,12 @@ public class Odometer extends Thread {
 				//Add distance traveled in X and Y to the previous values
 				x = x + dX;
 				y = y + dY;
-				// don't use the variables x, y, or theta anywhere but here!
-				//theta = -0.7376;
+				
+				Robot.debugSet("X: " + x, 0, 0, true);
+				Robot.debugSet("Y: " + y, 0, 1, true);
 			}
 
-			// this ensures that the odometer only runs once every period
+			//This ensures that the odometer only runs once every period
 			updateEnd = System.currentTimeMillis();
 			if (updateEnd - updateStart < ODOMETER_PERIOD) {
 				try {
@@ -93,9 +92,9 @@ public class Odometer extends Thread {
 		}
 	}
 	
-	// accessors
+	//Accessor methods
 	public void getPosition(double[] position, boolean[] update) {
-		// ensure that the values don't change while the odometer is running
+		//Ensure that the values don't change while the odometer is running
 		synchronized (lock) {
 			if (update[0])
 				position[0] = x;
@@ -136,9 +135,9 @@ public class Odometer extends Thread {
 		return result;
 	}
 
-	// mutators
+	//Mutator Methods
 	public void setPosition(double[] position, boolean[] update) {
-		// ensure that the values don't change while the odometer is running
+		//Ensure that the values don't change while the odometer is running
 		synchronized (lock) {
 			if (update[0])
 				x = position[0];
