@@ -7,8 +7,11 @@ public class Robot {
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
-	public static Odometer odo;
 	
+	public static double FWD_SPEED = 300, TURN_SPEED = 100;
+	
+	public static Odometer odo;
+	public static Navigation navigator;
 	
 	/**
 	 * @param args
@@ -17,6 +20,8 @@ public class Robot {
 	public static void main(String[] args) {
 		odo = new Odometer(); 
 		odo.start();
+		
+		navigator = new Navigation(odo);
 		
 		process();
 	}
@@ -43,5 +48,43 @@ public class Robot {
 			LCD.clear();
 		
 		LCD.drawString(info, x, y);
-	};
+	}
+	
+	public static void setSpeeds(double forwardSpeed, double rotationalSpeed) {
+		double leftSpeed, rightSpeed; 
+
+		//the method has been reworked to function with degrees per seconds speeds
+		leftSpeed = forwardSpeed+rotationalSpeed;
+		rightSpeed = forwardSpeed-rotationalSpeed;
+
+		// set motor directions
+		if (leftSpeed > 0.0){
+			LEFT_WHEEL.forward();
+		} else if (leftSpeed == 0){
+			//do nothing at speed = 0
+		} else {
+			LEFT_WHEEL.backward();
+			leftSpeed = -leftSpeed;
+		}
+		
+		if (rightSpeed > 0.0){
+			RIGHT_WHEEL.forward();
+		} else if (rightSpeed == 0){
+			//do nothing at speed = 0
+		} else {
+			RIGHT_WHEEL.backward();
+			rightSpeed = -rightSpeed;
+		}
+		
+		// set motor speeds
+		if (leftSpeed > 900.0)
+			LEFT_WHEEL.setSpeed(900);
+		else
+			LEFT_WHEEL.setSpeed((int)leftSpeed);
+		
+		if (rightSpeed > 900.0)
+			RIGHT_WHEEL.setSpeed(900);
+		else
+			RIGHT_WHEEL.setSpeed((int)rightSpeed);
+	}
 }
