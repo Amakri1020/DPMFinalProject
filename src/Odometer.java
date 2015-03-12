@@ -21,7 +21,9 @@ public class Odometer extends Thread {
 	//Lock object for mutual exclusion
 	private Object lock;
 
-	//Default constructor
+	/**
+	 *Default Constructor 
+	 */
 	public Odometer() {
 		x = 0.0;
 		y = 0.0;
@@ -37,28 +39,29 @@ public class Odometer extends Thread {
 
 		while (true) {
 			updateStart = System.currentTimeMillis();
+			
+			//Update odometer based on tachometer count
+			double distL, distR, deltaD, deltaT, dX, dY;
+			
+			//Get the Tacho count of the Motor
+			nowTachoL = Robot.LEFT_WHEEL.getTachoCount();
+			nowTachoR = Robot.RIGHT_WHEEL.getTachoCount();
+			
+			//Get Distance traveled based on the movement of the left and right wheels
+			distL = Math.PI * Robot.WHEEL_RADIUS * (nowTachoL - lastTachoL) / 180;
+			distR = Math.PI * Robot.WHEEL_RADIUS * (nowTachoR - lastTachoR) / 180;
+			
+			//Store previous Tacho Count
+			lastTachoL = nowTachoL;
+			lastTachoR = nowTachoR;
+			
+			//Distance traveled by the center of the wheel base
+			deltaD = 0.5*(distL + distR);
+			
+			//Difference in heading from previous reading
+			deltaT = (distL - distR) / Robot.WHEEL_BASE;
+			
 			synchronized (lock) {
-				
-				//Update odometer based on tachometer count
-				double distL, distR, deltaD, deltaT, dX, dY;
-				
-				//Get the Tacho count of the Motor
-				nowTachoL = Robot.LEFT_WHEEL.getTachoCount();
-				nowTachoR = Robot.RIGHT_WHEEL.getTachoCount();
-				
-				//Get Distance traveled based on the movement of the left and right wheels
-				distL = Math.PI * Robot.WHEEL_RADIUS * (nowTachoL - lastTachoL) / 180;
-				distR = Math.PI * Robot.WHEEL_RADIUS * (nowTachoR - lastTachoR) / 180;
-				
-				//Store previous Tacho Count
-				lastTachoL = nowTachoL;
-				lastTachoR = nowTachoR;
-				
-				//Distance traveled by the center of the wheel base
-				deltaD = 0.5*(distL + distR);
-				
-				//Difference in heading from previous reading
-				deltaT = (distL - distR) / Robot.WHEEL_BASE;
 				
 				//Update heading
 				theta += deltaT;
@@ -77,10 +80,10 @@ public class Odometer extends Thread {
 				//Add distance traveled in X and Y to the previous values
 				x = x + dX;
 				y = y + dY;
-				
-				Robot.debugSet("X: " + x, 0, 0, true);
-				Robot.debugSet("Y: " + y, 0, 1, true);
 			}
+			
+			Robot.debugSet("X: " + x, 0, 0, true);
+			Robot.debugSet("Y: " + y, 0, 1, true);
 
 			//This ensures that the odometer only runs once every period
 			updateEnd = System.currentTimeMillis();
@@ -92,7 +95,11 @@ public class Odometer extends Thread {
 		}
 	}
 	
-	//Accessor methods
+	/**
+	 * @param position
+	 * @param update
+	 * Accessor Method for robot x, y, theta data
+	 */
 	public void getPosition(double[] position, boolean[] update) {
 		//Ensure that the values don't change while the odometer is running
 		synchronized (lock) {
@@ -105,6 +112,10 @@ public class Odometer extends Thread {
 		}
 	}
 
+	/**
+	 * @return
+	 * Accessor Method for robot x position
+	 */
 	public double getX() {
 		double result;
 
@@ -115,6 +126,10 @@ public class Odometer extends Thread {
 		return result;
 	}
 
+	/**
+	 * @return
+	 * Accessor Method for robot y position
+	 */
 	public double getY() {
 		double result;
 
@@ -125,6 +140,10 @@ public class Odometer extends Thread {
 		return result;
 	}
 
+	/**
+	 * @return
+	 * Accessor Method for robot heading value
+	 */
 	public double getTheta() {
 		double result;
 
@@ -135,7 +154,11 @@ public class Odometer extends Thread {
 		return result;
 	}
 
-	//Mutator Methods
+	/**
+	 * @param position
+	 * @param update
+	 * Mutator Method for robot position data
+	 */
 	public void setPosition(double[] position, boolean[] update) {
 		//Ensure that the values don't change while the odometer is running
 		synchronized (lock) {
@@ -148,18 +171,30 @@ public class Odometer extends Thread {
 		}
 	}
 
+	/**
+	 * @param x
+	 * Mutator Method for robot's x value
+	 */
 	public void setX(double x) {
 		synchronized (lock) {
 			this.x = x;
 		}
 	}
 
+	/**
+	 * @param y
+	 * Mutator Method for robot's y value
+	 */
 	public void setY(double y) {
 		synchronized (lock) {
 			this.y = y;
 		}
 	}
 
+	/**
+	 * @param theta
+	 * Mutator Method for robot's heading value
+	 */
 	public void setTheta(double theta) {
 		synchronized (lock) {
 			this.theta = theta;
