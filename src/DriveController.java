@@ -31,5 +31,15 @@ public class DriveController extends Thread {
 		}
 		Robot.setSpeeds(0, 0);
 	}
+	
+	public void driveToPoint(double x, double y){
+		Robot.navigator.travelTo(x, y);
+	}
+	
+	public void driveArrayPoints(double[][] P, int n){
+		for (int i = 0; i < n; i++){
+			driveToPoint(P[i][0], P[i][1]);
+		}
+	}
 
 }
