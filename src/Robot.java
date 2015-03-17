@@ -30,7 +30,8 @@ public class Robot {
 		
 		driver = new DriveController();
 		
-		driver.straightDrive(400, 5000);
+		//driver.straightDrive(400, 5000);
+		driver.turnDrive(-400, 5000);
 		
 		process();
 	}
@@ -57,6 +58,11 @@ public class Robot {
 			LCD.clear();
 		
 		LCD.drawString(info, x, y);
+	}
+	
+	public static void setAcceleration(int a){
+		LEFT_WHEEL.setAcceleration(a);
+		RIGHT_WHEEL.setAcceleration(a);
 	}
 	
 	public static void setSpeeds(double forwardSpeed, double rotationalSpeed) {
