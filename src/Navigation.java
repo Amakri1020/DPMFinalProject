@@ -2,7 +2,7 @@
 public class Navigation extends Thread {
 	
 	private Odometer odo;
-	private static double ANGLE_ERROR = 10;
+	private static double ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 1.5;
 
@@ -13,6 +13,8 @@ public class Navigation extends Thread {
 	 */
 	public Navigation(Odometer odo) {
 		this.odo = odo;
+		Robot.LEFT_WHEEL.setAcceleration(300);
+		Robot.RIGHT_WHEEL.setAcceleration(300);
 	}
 	
 	/**
@@ -20,6 +22,9 @@ public class Navigation extends Thread {
 	 * Turns the robot by a number of degrees corresponding to the angle
 	 */
 	public void turnTo(double angle) {
+		while(angle < 0)
+			angle += 360;
+		
 		double aPos = odo.getTheta();
 		double dAngle = aPos - angle;
 		if ( (dAngle > 180) || ((dAngle < 0) && (dAngle > -180))){
@@ -87,7 +92,7 @@ public class Navigation extends Thread {
 		} else if (dY < 0 && dX > 0){
 			theta = Math.atan(dX/dY) + Math.PI;
 		} else {
-			theta = Math.atan(dX/dY) - Math.PI;
+			theta = Math.atan(dX/dY);
 		}
 		
 		theta = Math.toDegrees(theta);

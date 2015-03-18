@@ -2,8 +2,8 @@ import lejos.nxt.*;
 
 public class Robot {
 
-	public static final double WHEEL_BASE = 11;
-	public static final double WHEEL_RADIUS = 2.1;
+	public static final double WHEEL_BASE = 11.2;
+	public static final double WHEEL_RADIUS = 2.15;
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
@@ -33,7 +33,7 @@ public class Robot {
 	 * Contains behaviour functionality for robot
 	 */
 	public static void process(){
-		navigator.travelToSimple(60, 0);
+		navigator.travelToSimple(0,75);
 		while(true){}
 	}
 	
