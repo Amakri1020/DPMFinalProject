@@ -72,6 +72,17 @@ public class Robot {
 		leftSpeed = forwardSpeed+rotationalSpeed;
 		rightSpeed = forwardSpeed-rotationalSpeed;
 
+		// set motor speeds
+		if (leftSpeed > 900.0)
+			LEFT_WHEEL.setSpeed(900);
+		else
+			LEFT_WHEEL.setSpeed((int)leftSpeed);
+		
+		if (rightSpeed > 900.0)
+			RIGHT_WHEEL.setSpeed(900);
+		else
+			RIGHT_WHEEL.setSpeed((int)rightSpeed);
+		
 		// set motor directions
 		if (leftSpeed > 0.0){
 			LEFT_WHEEL.forward();
@@ -90,16 +101,5 @@ public class Robot {
 			RIGHT_WHEEL.backward();
 			rightSpeed = -rightSpeed;
 		}
-		
-		// set motor speeds
-		if (leftSpeed > 900.0)
-			LEFT_WHEEL.setSpeed(900);
-		else
-			LEFT_WHEEL.setSpeed((int)leftSpeed);
-		
-		if (rightSpeed > 900.0)
-			RIGHT_WHEEL.setSpeed(900);
-		else
-			RIGHT_WHEEL.setSpeed((int)rightSpeed);
 	}
 }
