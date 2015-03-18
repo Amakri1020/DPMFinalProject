@@ -2,13 +2,13 @@ import lejos.nxt.*;
 
 public class Robot {
 
-	public static final double WHEEL_BASE = 0;
-	public static final double WHEEL_RADIUS = 0;
+	public static final double WHEEL_BASE = 11;
+	public static final double WHEEL_RADIUS = 2.1;
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
 	
-	public static double FWD_SPEED = 300, TURN_SPEED = 100;
+	public static double FWD_SPEED = 300, TURN_SPEED = 40;
 	
 	public static Odometer odo;
 	public static Navigation navigator;
@@ -18,11 +18,13 @@ public class Robot {
 	 * Initializes threads for all constant autonomous functions
 	 */
 	public static void main(String[] args) {
+		Button.waitForAnyPress();
+		
 		odo = new Odometer();
 		odo.start();
 		
 		navigator = new Navigation(odo);
-		
+				
 		process();
 	}
 	
@@ -31,7 +33,8 @@ public class Robot {
 	 * Contains behaviour functionality for robot
 	 */
 	public static void process(){
-		
+		navigator.travelTo(0, 60);
+		while(true){}
 	}
 	
 	/**
@@ -61,7 +64,18 @@ public class Robot {
 		//the method has been reworked to function with degrees per seconds speeds
 		leftSpeed = forwardSpeed+rotationalSpeed;
 		rightSpeed = forwardSpeed-rotationalSpeed;
-
+		
+		// set motor speeds
+		if (leftSpeed > 900.0)
+			LEFT_WHEEL.setSpeed(900);
+		else
+			LEFT_WHEEL.setSpeed((int)leftSpeed);
+		
+		if (rightSpeed > 900.0)
+			RIGHT_WHEEL.setSpeed(900);
+		else
+			RIGHT_WHEEL.setSpeed((int)rightSpeed);
+		
 		// set motor directions
 		if (leftSpeed > 0.0){
 			LEFT_WHEEL.forward();
@@ -80,16 +94,5 @@ public class Robot {
 			RIGHT_WHEEL.backward();
 			rightSpeed = -rightSpeed;
 		}
-		
-		// set motor speeds
-		if (leftSpeed > 900.0)
-			LEFT_WHEEL.setSpeed(900);
-		else
-			LEFT_WHEEL.setSpeed((int)leftSpeed);
-		
-		if (rightSpeed > 900.0)
-			RIGHT_WHEEL.setSpeed(900);
-		else
-			RIGHT_WHEEL.setSpeed((int)rightSpeed);
 	}
 }

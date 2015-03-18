@@ -41,27 +41,27 @@ public class Odometer extends Thread {
 			updateStart = System.currentTimeMillis();
 			
 			//Update odometer based on tachometer count
-			double distL, distR, deltaD, deltaT, dX, dY;
-			
-			//Get the Tacho count of the Motor
-			nowTachoL = Robot.LEFT_WHEEL.getTachoCount();
-			nowTachoR = Robot.RIGHT_WHEEL.getTachoCount();
-			
-			//Get Distance traveled based on the movement of the left and right wheels
-			distL = Math.PI * Robot.WHEEL_RADIUS * (nowTachoL - lastTachoL) / 180;
-			distR = Math.PI * Robot.WHEEL_RADIUS * (nowTachoR - lastTachoR) / 180;
-			
-			//Store previous Tacho Count
-			lastTachoL = nowTachoL;
-			lastTachoR = nowTachoR;
-			
-			//Distance traveled by the center of the wheel base
-			deltaD = 0.5*(distL + distR);
-			
-			//Difference in heading from previous reading
-			deltaT = (distL - distR) / Robot.WHEEL_BASE;
+			double distL, distR, deltaD, deltaT, dX, dY = 0;
 			
 			synchronized (lock) {
+				//Get the Tacho count of the Motor
+				nowTachoL = Robot.LEFT_WHEEL.getTachoCount();
+				nowTachoR = Robot.RIGHT_WHEEL.getTachoCount();
+				
+				//Get Distance traveled based on the movement of the left and right wheels
+				distL = Math.PI * Robot.WHEEL_RADIUS * (nowTachoL - lastTachoL) / 180;
+				distR = Math.PI * Robot.WHEEL_RADIUS * (nowTachoR - lastTachoR) / 180;
+				
+				//Store previous Tacho Count
+				lastTachoL = nowTachoL;
+				lastTachoR = nowTachoR;
+				
+				//Distance traveled by the center of the wheel base
+				deltaD = 0.5*(distL + distR);
+				
+				//Difference in heading from previous reading
+				deltaT = (distL - distR) / Robot.WHEEL_BASE;
+			
 				
 				//Update heading
 				theta += deltaT;
@@ -84,6 +84,7 @@ public class Odometer extends Thread {
 			
 			Robot.debugSet("X: " + x, 0, 0, true);
 			Robot.debugSet("Y: " + y, 0, 1, true);
+			Robot.debugSet("T: " + (theta*180/Math.PI), 0, 2, true);
 
 			//This ensures that the odometer only runs once every period
 			updateEnd = System.currentTimeMillis();
@@ -148,7 +149,7 @@ public class Odometer extends Thread {
 		double result;
 
 		synchronized (lock) {
-			result = theta;
+			result = theta*180/Math.PI;
 		}
 
 		return result;
