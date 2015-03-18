@@ -33,7 +33,7 @@ public class Robot {
 	 * Contains behaviour functionality for robot
 	 */
 	public static void process(){
-		navigator.travelTo(0, 60);
+		navigator.travelToSimple(60, 0);
 		while(true){}
 	}
 	

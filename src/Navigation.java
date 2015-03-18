@@ -90,6 +90,9 @@ public class Navigation extends Thread {
 			theta = Math.atan(dX/dY) - Math.PI;
 		}
 		
+		theta = Math.toDegrees(theta);
+		Robot.debugSet("R: " + theta, 0, 5, true);
+		
 		if (theta != odo.getTheta()){
 			turnTo(theta);
 		}
