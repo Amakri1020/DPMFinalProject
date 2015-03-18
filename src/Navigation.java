@@ -7,10 +7,18 @@ public class Navigation extends Thread {
 	private static final double COORD_ERROR = .5;
 
 	
+	/**
+	 * @param odo
+	 * Default Constructor
+	 */
 	public Navigation(Odometer odo) {
 		this.odo = odo;
 	}
 	
+	/**
+	 * @param angle
+	 * Turns the robot by a number of degrees corresponding to the angle
+	 */
 	public void turnTo(double angle) {
 		angle = Math.toDegrees(angle);
 		double aPos = odo.getTheta();
@@ -39,7 +47,12 @@ public class Navigation extends Thread {
 		}
 	}
 	
-	//TravelTo that corrects while traveling
+	
+	/**
+	 * @param x
+	 * @param y
+	 * Makes the robot travel to the given point
+	 */
 	public void travelTo(double x, double y) {
 		double angle;
 		while (isOffTarget(x,y)) {
@@ -56,6 +69,11 @@ public class Navigation extends Thread {
 	
 	
 	//No correction, just turns and moves forward the distance
+	/**
+	 * @param x
+	 * @param y
+	 * travelTo without correction
+	 */
 	public void travelToSimple(double x, double y){
 		double dX = x - odo.getX();
 		double dY = y - odo.getY();

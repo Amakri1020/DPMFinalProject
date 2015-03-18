@@ -18,7 +18,7 @@ public class Robot {
 	 * Initializes threads for all constant autonomous functions
 	 */
 	public static void main(String[] args) {
-		odo = new Odometer(); 
+		odo = new Odometer();
 		odo.start();
 		
 		navigator = new Navigation(odo);
@@ -50,6 +50,11 @@ public class Robot {
 		LCD.drawString(info, x, y);
 	}
 	
+	/**
+	 * @param forwardSpeed
+	 * @param rotationalSpeed
+	 * Sets the speed of the robot
+	 */
 	public static void setSpeeds(double forwardSpeed, double rotationalSpeed) {
 		double leftSpeed, rightSpeed; 
 
