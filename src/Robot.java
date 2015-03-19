@@ -2,11 +2,17 @@ import lejos.nxt.*;
 
 public class Robot {
 
+	public static double[] goalArea = {60, 60};
+	public static final double[] FIELD_SIZE = {120, 120};
+	
 	public static final double WHEEL_BASE = 11.2;
 	public static final double WHEEL_RADIUS = 2.15;
+	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
+	
+	public static final UltrasonicSensor usSensor = new UltrasonicSensor(SensorPort.S1);
 	
 	public static double FWD_SPEED = 300, TURN_SPEED = 40;
 	
