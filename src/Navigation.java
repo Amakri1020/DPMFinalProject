@@ -4,9 +4,10 @@ import lejos.nxt.Motor;
 public class Navigation extends Thread {
 	
 	private Odometer odo;
-	private static double ANGLE_ERROR = 1;
+	private static double ANGLE_ERROR = 10;
+	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
-	private static final double COORD_ERROR = 1.5;
+	private static final double COORD_ERROR = 2;
 	public boolean isNavigating;
 	public boolean isRotating;
 	
@@ -32,7 +33,7 @@ public class Navigation extends Thread {
 		double dAngle = aPos - angle;
 		if ( (dAngle > 180) || ((dAngle < 0) && (dAngle > -180))){
 			Robot.setSpeeds(0, Robot.TURN_SPEED);
-			while (Math.abs(dAngle) > ANGLE_ERROR){
+			while (Math.abs(dAngle) > TURNING_ANGLE_ERROR){
 				try {
 					Thread.sleep(TURN_TIME);
 				} catch (InterruptedException e) {
@@ -44,7 +45,7 @@ public class Navigation extends Thread {
 
 		} else {
 			Robot.setSpeeds(0, -Robot.TURN_SPEED);
-			while (Math.abs(dAngle) > ANGLE_ERROR){
+			while (Math.abs(dAngle) > TURNING_ANGLE_ERROR){
 				try {
 					Thread.sleep(TURN_TIME);
 				} catch (InterruptedException e) {
@@ -56,9 +57,12 @@ public class Navigation extends Thread {
 		}
 	}
 	
-	
-	public void travelToTest(double x, double y)
-	{
+	/**
+	 * @param x
+	 * @param y
+	 * Makes the robot travel to the given point
+	 */
+	public void travelTo(double x, double y) {
 		double[] currentPosition = new double[3];
 		double hypotenuse;
 		double xNow, yNow, thetaNow;
@@ -98,35 +102,17 @@ public class Navigation extends Thread {
 			
 			//If angle is not within reasonable limits, rotate robot
 			//else move forward
-			if(Math.abs(thetaGo - thetaNow) >= Math.toDegrees(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toDegrees(ANGLE_ERROR)){
+			if(Math.abs(thetaGo - thetaNow) >= Math.toRadians(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toRadians(ANGLE_ERROR)){
 				isRotating = true;
 				turnTo(Math.toDegrees(thetaGo));
+				Robot.setSpeeds(0, 0);
+				try{
+					Thread.sleep(500);
+				} catch (InterruptedException e){}
 			}
 			else{
 				Robot.setSpeeds(Robot.FWD_SPEED, 0);
 			}
-		}
-			
-	}
-	
-	/**
-	 * @param x
-	 * @param y
-	 * Makes the robot travel to the given point
-	 */
-	public void travelTo(double x, double y) {
-		double angle;
-		Robot.debugSet("NOPE", 0, 3, true);
-		while (isOffTarget(x,y)) {
-			angle = (Math.atan2(y - odo.getY(), x - odo.getX())) * (180.0 / Math.PI);
-			if (angle < 0)
-				angle += 360.0;
-			if (Math.abs(odo.getTheta()-angle) > ANGLE_ERROR){
-				this.turnTo(angle);
-				Robot.debugSet("A: " + angle, 0, 3, true);
-			}
-
-			Robot.setSpeeds(Robot.FWD_SPEED, 0);
 		}
 	}
 	

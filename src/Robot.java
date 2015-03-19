@@ -24,8 +24,6 @@ public class Robot {
 	 * Initializes threads for all constant autonomous functions
 	 */
 	public static void main(String[] args) {
-		Button.waitForAnyPress();
-		
 		odo = new Odometer();
 		odo.start();
 		
@@ -39,8 +37,18 @@ public class Robot {
 	 * Contains behaviour functionality for robot
 	 */
 	public static void process(){
-		navigator.travelToSimple(0,75);
-		while(true){}
+		while(true){
+			Button.waitForAnyPress();
+			double[][] positions = {{0, 60},{60, 60}, {60, 0}, {0, 0}};
+			for (int i = 0; i < positions.length; i++){
+				navigator.travelTo(positions[i][0], positions[i][1]);
+				try{
+					Thread.sleep(500);
+				} catch (InterruptedException e){}
+			}
+			navigator.turnTo(0);
+			Robot.setSpeeds(0, 0);
+		}
 	}
 	
 	/**

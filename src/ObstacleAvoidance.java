@@ -31,10 +31,11 @@ public class ObstacleAvoidance {
 				if (!isWall(currentPosition, distance)){
 					avoiding = false;
 				} else {
-					Robot.setSpeeds(0, Robot.TURN_SPEED);
+					Robot.setSpeeds(0, -turnSpeed);
 				}
 			}
 		}
+		Robot.setSpeeds(Robot.FWD_SPEED, 0);
 	}
 	
 	public static boolean isWall(double[] currentPosition, int distance){
