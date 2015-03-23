@@ -9,14 +9,15 @@ public class USLocalizer {
 	private UltrasonicSensor us;
 	private LocalizationType locType;
 	private Navigation nav;
-	private static int DETECTION_LIMIT = 55, THETA_OFFSET = 0;
+	private static int DETECTION_LIMIT = 40, THETA_OFFSET = 0;
 	
 	private int clipDistance = 70;
 	
-	public USLocalizer(Odometer odo, UltrasonicSensor us, LocalizationType locType) {
+	public USLocalizer(Odometer odo, UltrasonicSensor us, Navigation nav) {
 		this.odo = odo;
 		this.us = us;
-		this.locType = locType;
+		this.nav = nav;
+		this.locType = LocalizationType.FALLING_EDGE;
 		
 		// switch off the ultrasonic sensor
 		us.off();
@@ -29,12 +30,12 @@ public class USLocalizer {
 			Robot.setSpeeds(0, Robot.TURN_SPEED);
 			
 			//rotate until no walls
-			while ((getFilteredData() < DETECTION_LIMIT));
+			while ((getFilteredData() < DETECTION_LIMIT+5));
 			Sound.beep();
 			
 			//the sleeps effectively filter out any readings that are marginal near the wall/no wall cutoff
 			try {
-				Thread.sleep(300);
+				Thread.sleep(500);
 			} catch (InterruptedException e1) {
 
 			}
@@ -46,10 +47,10 @@ public class USLocalizer {
 			
 			//switch directions, rotate until no walls
 			Robot.setSpeeds(0,-Robot.TURN_SPEED);
-			while ((getFilteredData() < DETECTION_LIMIT));
+			while ((getFilteredData() < DETECTION_LIMIT+5));
 			Sound.beep();
 			try {
-				Thread.sleep(300);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 
 			}
@@ -62,6 +63,8 @@ public class USLocalizer {
 			
 			double dTheta = 0;
 			
+			Robot.setSpeeds(0, 0);
+			
 			//The correction angle is calculated and applied to the odometer
 			if (angleA < angleB){
 				dTheta = (225-correctionAngle);
@@ -69,8 +72,8 @@ public class USLocalizer {
 				dTheta = (45-correctionAngle);
 			}
 			
-			odo.setTheta(odo.getTheta() + dTheta + THETA_OFFSET);
-			nav.turnTo(0);
+			odo.setTheta(Math.toRadians(odo.getTheta() + dTheta + THETA_OFFSET));
+			//nav.turnTo(0);
 
 		} else {
 			Robot.setSpeeds(0,Robot.TURN_SPEED);
@@ -101,6 +104,8 @@ public class USLocalizer {
 			angleB = odo.getTheta();
 			Sound.beep();
 			
+			Robot.setSpeeds(0, 0);
+			
 			//correct angle
 			double dTheta;
 			double correctionAngle = ((angleA + angleB) / 2);
@@ -111,7 +116,7 @@ public class USLocalizer {
 			}
 			
 			odo.setTheta(odo.getTheta() + dTheta + THETA_OFFSET);
-			nav.turnTo(0);
+			//nav.turnTo(0);
 
 			//set up for LS correction
 			//nav.travelTo(7, 7);

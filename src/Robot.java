@@ -18,6 +18,7 @@ public class Robot {
 	
 	public static Odometer odo;
 	public static Navigation navigator;
+	public static USLocalizer usLoc;
 	
 	/**
 	 * @param args
@@ -26,10 +27,14 @@ public class Robot {
 	public static void main(String[] args) {
 		odo = new Odometer();
 		odo.start();
-		
 		navigator = new Navigation(odo);
+		
+		usLoc = new USLocalizer(odo, usSensor, navigator);
+		
+		usLoc.doLocalization();
+		
 				
-		process();
+		//process();
 	}
 	
 	
