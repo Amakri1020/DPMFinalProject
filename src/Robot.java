@@ -1,4 +1,5 @@
 import lejos.nxt.*;
+import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
@@ -31,9 +32,13 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		
-		usLoc.doLocalization();
+		//usLoc.doLocalization();
 		
-				
+		RConsole.open();
+		int[] dists = usLoc.sweepFull(72);
+		for (int i = 0; i < 72; i++){
+			RConsole.println(dists[i] + ", ");
+		}
 		//process();
 	}
 	

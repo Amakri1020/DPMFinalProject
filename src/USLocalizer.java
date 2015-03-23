@@ -9,7 +9,7 @@ public class USLocalizer {
 	private UltrasonicSensor us;
 	private LocalizationType locType;
 	private Navigation nav;
-	private static int DETECTION_LIMIT = 40, THETA_OFFSET = 0;
+	private static int DETECTION_LIMIT = 40, THETA_OFFSET = 0, ANG_THRSH = 2;
 	
 	private int clipDistance = 70;
 	
@@ -142,4 +142,30 @@ public class USLocalizer {
 		return distance;
 	}
 
+	public int[] sweepFull(int count){
+		int[] distances = new int[count];
+		double arc = 360/count;
+		double start, target;
+		start = odo.getTheta();
+		
+		for (int i = 0; i < count; i++){
+			target = start + (i*arc);
+			Robot.setSpeeds(0, Robot.TURN_SPEED);
+			while (Math.abs(odo.getTheta() - target) > ANG_THRSH){
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+				}
+			}
+			us.ping();
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+			}
+			distances[i] = us.getDistance();
+		}
+		Robot.setSpeeds(0, 0);
+		return distances;
+	}
+	
 }

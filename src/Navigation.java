@@ -25,7 +25,7 @@ public class Navigation extends Thread {
 	 * @param angle
 	 * Turns the robot by a number of degrees corresponding to the angle
 	 */
-	public void turnTo(double angle) {
+	public void turnTo(double angle) { //TODO needs stopping added
 		while(angle < 0)
 			angle += 360;
 		
