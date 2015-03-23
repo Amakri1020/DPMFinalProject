@@ -1,4 +1,4 @@
-import lejos.nxt.Motor;
+
 
 
 public class Navigation extends Thread {
@@ -154,8 +154,8 @@ public class Navigation extends Thread {
 	private static int convertDistance(double radius, double distance){
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
-	private boolean isOffTarget(double x, double y){
+	/*private boolean isOffTarget(double x, double y){
 		return (Math.abs(x - odo.getX()) > COORD_ERROR || Math.abs(y - odo.getY()) > COORD_ERROR);
-	}
+	}*/
 
 }
