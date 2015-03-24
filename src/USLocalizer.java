@@ -11,7 +11,7 @@ public class USLocalizer {
 	private Navigation nav;
 	private static int DETECTION_LIMIT = 40, THETA_OFFSET = 0, ANG_THRSH = 2;
 	
-	private int clipDistance = 70;
+	public static int clipDistance = 70;
 	
 	public USLocalizer(Odometer odo, UltrasonicSensor us, Navigation nav) {
 		this.odo = odo;
@@ -143,6 +143,12 @@ public class USLocalizer {
 	}
 
 	public int[] sweepFull(int count){
+		
+		//rotate until no walls
+		Robot.setSpeeds(0, Robot.TURN_SPEED);
+		while ((getFilteredData() < DETECTION_LIMIT+5));
+		odo.setTheta(0);
+		
 		int[] distances = new int[count];
 		double arc = 360/count;
 		double start, target;
@@ -166,6 +172,52 @@ public class USLocalizer {
 		}
 		Robot.setSpeeds(0, 0);
 		return distances;
+	}
+	
+	public static int[] findLocalMinima(int[] dists) {
+		int[] result = new int[2];
+		result[0] = Integer.MAX_VALUE;
+		result[1] = Integer.MAX_VALUE;
+		int firstUp = 0;
+		for(int i = 0; i < dists.length; i++){
+			if(dists[i] == USLocalizer.clipDistance){
+				continue;
+			}
+			else{
+				if(dists[i] < result[0]){
+					result[0] = i;
+				}
+				if(i != 0 && dists[i] > dists[i-1]){
+					firstUp = i-1;
+					break;
+				}
+			}
+		}
+		int secondUp = 0;
+		for(int i = firstUp; i < dists.length; i++){
+			//wait until values decrease again
+			while(dists[i] > dists[i-1]){
+				continue;
+			}
+			
+			if(dists[i] == USLocalizer.clipDistance){
+				continue;
+			} else {
+				if(dists[i] < result[1]){
+					result[1] = i;
+				}
+				if(i != 0 && dists[i] > dists[i-1]){
+					secondUp = i;
+					break;
+				}
+			}
+		}
+		result[0] = ((result[0] + firstUp)/2);
+		result[1] = ((result[1] + secondUp)/2);
+		return result;
+
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

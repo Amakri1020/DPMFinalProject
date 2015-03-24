@@ -7,7 +7,7 @@ public class Robot {
 	public static final double[] FIELD_SIZE = {120, 120};
 	
 	public static final double WHEEL_BASE = 11.2;
-	public static final double WHEEL_RADIUS = 2.15;
+	public static final double WHEEL_RADIUS = 2.15, US_OFFSET = 0;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
@@ -34,15 +34,26 @@ public class Robot {
 		
 		//usLoc.doLocalization();
 		
-		RConsole.open();
-		int[] dists = usLoc.sweepFull(72);
-		for (int i = 0; i < 72; i++){
+		//RConsole.open();
+		int count = 72;
+		int arc = 360/count;
+		int[] dists = usLoc.sweepFull(count);
+		/*for (int i = 0; i < 72; i++){
 			RConsole.println(dists[i] + ", ");
-		}
+		}*/
+		
+		int[] yx = USLocalizer.findLocalMinima(dists);
+		Robot.debugSet(yx + " ",0,5,false);
+		odo.setY(dists[yx[0]] + US_OFFSET);
+		odo.setX(dists[yx[1]] + US_OFFSET);
+		odo.setTheta((dists[yx[1]]*arc - 90) + dists[yx[0]]*arc - 180);
+		
 		//process();
 	}
 	
 	
+
+
 	/**
 	 * Contains behaviour functionality for robot
 	 */
