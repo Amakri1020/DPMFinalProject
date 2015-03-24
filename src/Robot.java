@@ -14,12 +14,15 @@ public class Robot {
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
 	
 	public static final UltrasonicSensor usSensor = new UltrasonicSensor(SensorPort.S1);
+	public static final UltrasonicSensor usSensorLeft = new UltrasonicSensor(SensorPort.S3);
+	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S2);
 	
 	public static double FWD_SPEED = 300, TURN_SPEED = 40;
 	
 	public static Odometer odo;
 	public static Navigation navigator;
 	public static USLocalizer usLoc;
+	public static ObstacleAvoidance obAvoid;
 	
 	/**
 	 * @param args
@@ -29,8 +32,12 @@ public class Robot {
 		odo = new Odometer();
 		odo.start();
 		navigator = new Navigation(odo);
+		Button.waitForAnyPress();
+		obAvoid = new ObstacleAvoidance();
+		obAvoid.startAvoidance();
+		Button.waitForAnyPress();
 		
-		usLoc = new USLocalizer(odo, usSensor, navigator);
+		//usLoc = new USLocalizer(odo, usSensor, navigator);
 		
 		//usLoc.doLocalization();
 		
