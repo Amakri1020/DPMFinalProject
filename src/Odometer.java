@@ -82,9 +82,9 @@ public class Odometer extends Thread {
 				y = y + dY;
 			}
 			
-			Robot.debugSet("X: " + x, 0, 0, true);
-			Robot.debugSet("Y: " + y, 0, 1, true);
-			Robot.debugSet("T: " + (theta*180/Math.PI), 0, 2, true);
+			Robot.debugSet("X: " + (int)x, 0, 0, true);
+			Robot.debugSet("Y: " + (int)y, 0, 1, true);
+			Robot.debugSet("T: " + (int)(theta*180/Math.PI), 0, 2, true);
 
 			//This ensures that the odometer only runs once every period
 			updateEnd = System.currentTimeMillis();

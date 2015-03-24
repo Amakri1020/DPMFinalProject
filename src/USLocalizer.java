@@ -1,5 +1,6 @@
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
+import lejos.nxt.comm.RConsole;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
@@ -147,6 +148,10 @@ public class USLocalizer {
 		double arc = 360/count;
 		double start, target;
 		start = odo.getTheta();
+		Robot.setSpeeds(0,Robot.TURN_SPEED);
+		//rotate until he doesnt see a wall
+		while ((getFilteredData() < clipDistance));
+		Sound.beep();
 		
 		for (int i = 0; i < count; i++){
 			target = start + (i*arc);
@@ -157,15 +162,61 @@ public class USLocalizer {
 				} catch (InterruptedException e) {
 				}
 			}
-			us.ping();
-			try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-			}
-			distances[i] = us.getDistance();
+			distances[i] = getFilteredData();
 		}
 		Robot.setSpeeds(0, 0);
 		return distances;
 	}
 	
+	public int[] findLocalMinima(int[] dists){
+		int[] result = new int[2];
+		result[0] = 0; 
+		result[1] = 0;
+		int firstUp=0, secondUp=0;
+		
+		//iterate through distances until first local min
+		for(int i = 0; i < dists.length; i++){
+			
+			if(dists[i] == clipDistance){
+				continue;
+			} else {
+				
+				if(dists[i] < dists[result[0]]){
+					result[0] = i;
+				}
+				//break when distance values start rising again
+				if(i != 0 && dists[i] > dists[i-1]){
+					firstUp = i-1;
+					break;
+				}
+			}
+		}
+		RConsole.println("first indices: " + result[0] + ", " + firstUp);
+		result[0] = ((result[0] + firstUp)/2);
+		
+		//start from where the last loop ended
+		for(int i = firstUp; i < dists.length; i++){
+			//read until values start decreasing again (past the corner)
+			while(dists[i] >= dists[i-1]){
+				i++;
+				continue;
+			}
+			
+			if(dists[i] == clipDistance){
+				continue;
+			} else {
+				if(dists[i] < dists[result[1]]){
+					result[1] = i;
+				}
+				if( i != 0 && dists[i] > dists[i-1]){
+					secondUp = i-1;
+					break;
+				}
+			}
+		}
+		RConsole.println("second indices: " + result[1] + ", " + secondUp);
+		result[1] = ((result[1] + secondUp)/2);
+		//RConsole.println("x facing wall = " + result[1]);
+		return result;
+	}
 }

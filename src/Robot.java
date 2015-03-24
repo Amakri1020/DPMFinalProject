@@ -6,7 +6,7 @@ public class Robot {
 	public static double[] goalArea = {60, 60};
 	public static final double[] FIELD_SIZE = {120, 120};
 	
-	public static final double WHEEL_BASE = 11.2;
+	public static final double WHEEL_BASE = 11.2, US_OFFSET = 0;
 	public static final double WHEEL_RADIUS = 2.15;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
@@ -35,10 +35,19 @@ public class Robot {
 		//usLoc.doLocalization();
 		
 		RConsole.open();
-		int[] dists = usLoc.sweepFull(72);
+		int count = 72;
+		int arc = 360/count;
+		int[] dists = usLoc.sweepFull(count);
+		int[] yx = usLoc.findLocalMinima(dists);
 		for (int i = 0; i < 72; i++){
 			RConsole.println(dists[i] + ", ");
 		}
+		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
+		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
+		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
+		odo.setY(dists[yx[0]] + US_OFFSET);
+		odo.setX(dists[yx[1]] + US_OFFSET);
+		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
 		//process();
 	}
 	
