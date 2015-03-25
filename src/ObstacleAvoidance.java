@@ -21,30 +21,71 @@ public class ObstacleAvoidance {
 		boolean quickTurn = false;
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
 		
+		double idealAngle = Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1]));
+		
 		//Which way to rotate
-		if (currentPosition[0] > currentPosition[1]) {
+		if (currentPosition[2] > idealAngle && currentPosition[2] <= idealAngle) {
+			Robot.usSensorLeft.ping();
+			try{
+				Thread.sleep(200);
+			} catch (InterruptedException e){}
 			distanceLeft = Robot.usSensorLeft.getDistance();
+			
+			Robot.debugSet("LD: " + distanceLeft, 0, 5, true);
+			Button.waitForAnyPress();
 			if (distanceLeft > 60){
-				Robot.navigator.turnTo(currentPosition[2] - 45);
-				Button.waitForAnyPress();
+				
+				double turnAngle = currentPosition[2] - 45;
+				if (turnAngle < 0)
+					turnAngle += 360;
+				
+				Robot.navigator.turnTo(turnAngle);
 				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				
 				Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(currentPosition[2])), 
 						currentPosition[1] + 30*Math.cos(currentPosition[2]));
+				
+				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				
+				idealAngle = Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1]));
+				Robot.navigator.turnTo(idealAngle);
+				
 				return;
 			}
 			turnSpeed = -Robot.TURN_SPEED;
 		} else {
+			Robot.usSensorRight.ping();
+			try{
+				Thread.sleep(200);
+			} catch (InterruptedException e){}
 			distanceRight = Robot.usSensorRight.getDistance();
+			
+			Robot.debugSet("RD: " + distanceRight, 0, 5, true);
+			Button.waitForAnyPress();
 			if (distanceRight > 60){
+				
+				double turnAngle = currentPosition[2] + 45;
+				if (turnAngle > 360)
+					turnAngle -= 360;
+				
 				Robot.navigator.turnTo(currentPosition[2] - 45);
 				Button.waitForAnyPress();
 				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				
 				Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(currentPosition[2])), 
 						currentPosition[1] + 30*Math.cos(Math.toRadians(currentPosition[2])));
+				
+				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				
+				idealAngle = Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1]));
+				Robot.navigator.turnTo(idealAngle);
+				
 				return;
 			}
 			turnSpeed = Robot.TURN_SPEED;
 		}
+		
+		Robot.debugSet("OUTSIDE", 0, 5, true);
 		
 		Robot.setSpeeds(0, turnSpeed);
 		
