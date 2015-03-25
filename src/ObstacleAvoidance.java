@@ -1,3 +1,5 @@
+import lejos.nxt.Button;
+
 
 public class ObstacleAvoidance {
 
@@ -13,20 +15,42 @@ public class ObstacleAvoidance {
 	public static void startAvoidance(){
 		double[] currentPosition = new double[3];
 		int distance;
+		int distanceLeft;
+		int distanceRight;
 		double turnSpeed;
+		boolean quickTurn = false;
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
 		
 		//Which way to rotate
-		if(currentPosition[0] > currentPosition[1])
+		if (currentPosition[0] > currentPosition[1]) {
+			distanceLeft = Robot.usSensorLeft.getDistance();
+			if (distanceLeft > 60){
+				Robot.navigator.turnTo(currentPosition[2] - 45);
+				Button.waitForAnyPress();
+				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(currentPosition[2])), 
+						currentPosition[1] + 30*Math.cos(currentPosition[2]));
+				return;
+			}
 			turnSpeed = -Robot.TURN_SPEED;
-		else
+		} else {
+			distanceRight = Robot.usSensorRight.getDistance();
+			if (distanceRight > 60){
+				Robot.navigator.turnTo(currentPosition[2] - 45);
+				Button.waitForAnyPress();
+				odo.getPosition(currentPosition, new boolean[] {true, true, true});
+				Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(currentPosition[2])), 
+						currentPosition[1] + 30*Math.cos(Math.toRadians(currentPosition[2])));
+				return;
+			}
 			turnSpeed = Robot.TURN_SPEED;
+		}
 		
 		Robot.setSpeeds(0, turnSpeed);
 		
 		while(avoiding){
 			distance = Robot.usSensor.getDistance();
-			if (distance > 100){
+			if (distance > 60){
 				odo.getPosition(currentPosition, new boolean[] {true, true, true});
 				if (!isWall(currentPosition, distance)){
 					avoiding = false;
@@ -35,7 +59,11 @@ public class ObstacleAvoidance {
 				}
 			}
 		}
-		Robot.setSpeeds(Robot.FWD_SPEED, 0);
+		
+		odo.getPosition(currentPosition, new boolean[] {true, true, true});
+		Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(currentPosition[2])),
+				currentPosition[1] + 30*Math.cos(Math.toRadians(currentPosition[2])));
+		return;
 	}
 	
 	public static boolean isWall(double[] currentPosition, int distance){

@@ -55,6 +55,7 @@ public class Navigation extends Thread {
 				Robot.debugSet("A: " + dAngle, 0, 3, true);
 			}
 		}
+		Robot.setSpeeds(0, 0);
 	}
 	
 	/**

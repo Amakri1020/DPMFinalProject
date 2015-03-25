@@ -6,20 +6,23 @@ public class Robot {
 	public static double[] goalArea = {60, 60};
 	public static final double[] FIELD_SIZE = {120, 120};
 	
-	public static final double WHEEL_BASE = 11.2;
-	public static final double WHEEL_RADIUS = 2.15, US_OFFSET = 0;
+	public static final double WHEEL_BASE = 11.2, US_OFFSET = 0;
+	public static final double WHEEL_RADIUS = 2.15;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
 	
 	public static final UltrasonicSensor usSensor = new UltrasonicSensor(SensorPort.S1);
+	public static final UltrasonicSensor usSensorLeft = new UltrasonicSensor(SensorPort.S3);
+	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S2);
 	
 	public static double FWD_SPEED = 300, TURN_SPEED = 40;
 	
 	public static Odometer odo;
 	public static Navigation navigator;
 	public static USLocalizer usLoc;
+	public static ObstacleAvoidance obAvoid;
 	
 	/**
 	 * @param args
@@ -29,25 +32,29 @@ public class Robot {
 		odo = new Odometer();
 		odo.start();
 		navigator = new Navigation(odo);
+		Button.waitForAnyPress();
+		obAvoid = new ObstacleAvoidance();
+		obAvoid.startAvoidance();
+		Button.waitForAnyPress();
 		
-		usLoc = new USLocalizer(odo, usSensor, navigator);
+		//usLoc = new USLocalizer(odo, usSensor, navigator);
 		
 		//usLoc.doLocalization();
 		
-		//RConsole.open();
+		RConsole.open();
 		int count = 72;
 		int arc = 360/count;
 		int[] dists = usLoc.sweepFull(count);
-		/*for (int i = 0; i < 72; i++){
+		int[] yx = usLoc.findLocalMinima(dists);
+		for (int i = 0; i < 72; i++){
 			RConsole.println(dists[i] + ", ");
-		}*/
-		
-		int[] yx = USLocalizer.findLocalMinima(dists);
-		Robot.debugSet(yx + " ",0,5,false);
+		}
+		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
+		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
+		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
 		odo.setY(dists[yx[0]] + US_OFFSET);
 		odo.setX(dists[yx[1]] + US_OFFSET);
-		odo.setTheta((dists[yx[1]]*arc - 90) + dists[yx[0]]*arc - 180);
-		
+		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
 		//process();
 	}
 	
