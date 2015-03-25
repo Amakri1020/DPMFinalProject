@@ -115,6 +115,7 @@ public class Navigation extends Thread {
 				Robot.setSpeeds(Robot.FWD_SPEED, 0);
 			}
 		}
+		Robot.setSpeeds(0,0);
 	}
 	
 	
