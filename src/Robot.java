@@ -32,26 +32,26 @@ public class Robot {
 		odo = new Odometer();
 		odo.start();
 		navigator = new Navigation(odo);
-		Button.waitForAnyPress();
-		obAvoid = new ObstacleAvoidance();
+		//Button.waitForAnyPress();
+		/*obAvoid = new ObstacleAvoidance();
 		obAvoid.startAvoidance();
-		Button.waitForAnyPress();
+		Button.waitForAnyPress();*/
 		
-		//usLoc = new USLocalizer(odo, usSensor, navigator);
+		usLoc = new USLocalizer(odo, usSensor, navigator);
 		
 		//usLoc.doLocalization();
 		
-		RConsole.open();
+		//RConsole.open();
 		int count = 72;
 		int arc = 360/count;
 		int[] dists = usLoc.sweepFull(count);
 		int[] yx = usLoc.findLocalMinima(dists);
-		for (int i = 0; i < 72; i++){
+		/*for (int i = 0; i < 72; i++){
 			RConsole.println(dists[i] + ", ");
 		}
 		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
 		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
-		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
+		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));*/
 		odo.setY(dists[yx[0]] + US_OFFSET);
 		odo.setX(dists[yx[1]] + US_OFFSET);
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
