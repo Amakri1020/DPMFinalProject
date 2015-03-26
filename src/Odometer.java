@@ -194,7 +194,7 @@ public class Odometer extends Thread {
 
 	/**
 	 * @param theta
-	 * Mutator Method for robot's heading value
+	 * Mutator Method for robot's value
 	 */
 	public void setTheta(double theta) {
 		synchronized (lock) {

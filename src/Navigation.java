@@ -10,6 +10,7 @@ public class Navigation extends Thread {
 	private static final double COORD_ERROR = 2;
 	public boolean isNavigating;
 	public boolean isRotating;
+	public int distance = 0;
 	
 	/**
 	 * @param odo
@@ -48,8 +49,7 @@ public class Navigation extends Thread {
 			while (Math.abs(dAngle) > TURNING_ANGLE_ERROR){
 				try {
 					Thread.sleep(TURN_TIME);
-				} catch (InterruptedException e) {
-				}
+				} catch (InterruptedException e) {}
 				aPos = odo.getTheta();
 				dAngle = aPos - angle;
 				Robot.debugSet("A: " + dAngle, 0, 3, true);
@@ -76,6 +76,20 @@ public class Navigation extends Thread {
 	    //Continue while robot is not at desired position
 		while(hypotenuse >= COORD_ERROR)
 		{	
+			
+			Robot.usSensor.ping();
+			try{
+				Thread.sleep(100);
+			} catch (InterruptedException e){}
+			distance = Robot.usSensor.getDistance();
+			
+			if (distance <= 30){
+				Robot.setSpeeds(0, 0);
+				Robot.obAvoid.startAvoidance();
+				return;
+				//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
+			}
+			
 			odo.getPosition(currentPosition, new boolean [] {true, true, true});
 			
 			xNow = currentPosition[0];
