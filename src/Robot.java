@@ -41,51 +41,12 @@ public class Robot {
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		lLoc = new LightLocalizer(odo, ls);
 		
-//		navigator.turnTo(90);
-//		try{
-//			Thread.sleep(100);
-//		} catch(InterruptedException e){}
-//		navigator.turnTo(180);
-//		try{
-//			Thread.sleep(100);
-//		} catch(InterruptedException e){}
-//		navigator.turnTo(270);
-//		try{
-//			Thread.sleep(100);
-//		} catch(InterruptedException e){}
-//		navigator.turnTo(0);
-//		try{
-//			Thread.sleep(100);
-//		} catch(InterruptedException e){}
-//		
-//		Button.waitForAnyPress();
-		
-		/*navigator.travelTo(0, 60);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {}
-		navigator.travelTo(60, 0);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {}
-		navigator.travelTo(60, 60);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {}
-		navigator.travelTo(0, 0);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {}
-		navigator.turnTo(0);
-		Robot.setSpeeds(0, 0);*/
-		
-		//Button.waitForAnyPress();
-		//Launcher launcher = new Launcher(3);
-		
 //		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
 //			debugSet("AGAIN", 0, 5, true);
 //			navigator.travelTo(goalArea[0], goalArea[1]);
 //		}
+//		
+//		Button.waitForAnyPress();
 		//usLoc.doLocalization();
 		
 		// RConsole.open();
@@ -106,33 +67,13 @@ public class Robot {
 		navigator.travelTo(0,0);
 		navigator.turnTo(0);
 		
-		navigator.travelTo(-Navigation.tile/2 , Navigation.tile); //Nav shoot at point test
-		navigator.travelTo(-Navigation.tile/2, 5.5*Navigation.tile);
-		navigator.turnTo(90);
-		navigator.travelTo(1.5*Navigation.tile, 5.5*Navigation.tile);
-		navigator.turnTo(0);
-		navigator.travelTo(1.5*Navigation.tile, 6.5*Navigation.tile);
-		navigator.turnTo(90);
-		navigator.travelTo(5*Navigation.tile, 6.5*Navigation.tile);
-		//Go to shooting point(DEMO target)
-		// Algorithm for X and Y  position to shoot =
-		//4*T + (  T*3-     (   shootingDist(cos(theta) or sin(theta)) -  T*2)   )
-		//4*T = distance from shooting in x and y
-		// 3*T = dimensions of shooting zone
-		//T*2 distance from top right corner of shooting zone to target in X and Y 
-		navigator.travelTo(145, 145);
-		navigator.turnTo(45);
-		
-
-		
-		Launcher launcher = new Launcher(3);
 //		for (int i = 0; i < 72; i++){
 //			RConsole.println(i+": "+ dists[i] + ", ");
 //		}
 		//RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
-		//RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
-		//RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
-		//process();
+		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
+		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
+		process();
 	}
 	
 	
@@ -142,18 +83,6 @@ public class Robot {
 	 * Contains behaviour functionality for robot
 	 */
 	public static void process(){
-		while(true){
-			Button.waitForAnyPress();
-			double[][] positions = {{0, 60},{60, 60}, {60, 0}, {0, 0}};
-			for (int i = 0; i < positions.length; i++){
-				navigator.travelTo(positions[i][0], positions[i][1]);
-				try{
-					Thread.sleep(500);
-				} catch (InterruptedException e){}
-			}
-			navigator.turnTo(0);
-			Robot.setSpeeds(0, 0);
-		}
 	}
 	
 	/**

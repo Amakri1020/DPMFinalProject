@@ -4,7 +4,7 @@
 public class Navigation extends Thread {
 	
 	private Odometer odo;
-	private static double ANGLE_ERROR = 30;
+	private static double ANGLE_ERROR = 10;
 	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 2;
@@ -157,12 +157,11 @@ public class Navigation extends Thread {
 			//else move forward
 			if(Math.abs(thetaGo - thetaNow) >= Math.toRadians(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toRadians(ANGLE_ERROR)){
 				isRotating = true;
-				break;
-//				turnTo(Math.toDegrees(thetaGo));
-//				Robot.setSpeeds(0, 0);
-//				try{
-//					Thread.sleep(500);
-//				} catch (InterruptedException e){}
+				turnTo(Math.toDegrees(thetaGo));
+				Robot.setSpeeds(0, 0);
+				try{
+					Thread.sleep(500);
+				} catch (InterruptedException e){}
 			}
 			else{
 				Robot.setSpeeds(Robot.FWD_SPEED, 0);

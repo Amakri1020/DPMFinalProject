@@ -16,8 +16,6 @@ public class ObstacleAvoidance {
 	
 	public static void startAvoidance(){
 		int distance;
-		int distanceLeft;
-		int distanceRight;
 		double turnSpeed = Robot.TURN_SPEED;
 		double previousAngle;
 		
@@ -89,9 +87,6 @@ public class ObstacleAvoidance {
 		} catch(InterruptedException e){}
 		
 		UltrasonicSensor wallSensor;
-		int preDistance = 0;
-		int distance = 0;
-		int filterControl = 0;
 		
 		if(previousTurnSpeed > 0)
 			wallSensor = Robot.usSensorLeft;
@@ -107,9 +102,9 @@ public class ObstacleAvoidance {
 		
 		Robot.odo.getPosition(currentPosition, new boolean[] {true, true, true});
 		if(previousTurnSpeed > 0)
-			Robot.navigator.turnTo(previousAngle/*safeAddToAngle(currentPosition[2], -45)*/);
+			Robot.navigator.turnTo(previousAngle);
 		else
-			Robot.navigator.turnTo(previousAngle/*safeAddToAngle(currentPosition[2], 45)*/);
+			Robot.navigator.turnTo(previousAngle);
 		
 		Robot.setSpeeds(0, 0);
 		
@@ -187,75 +182,3 @@ public class ObstacleAvoidance {
 		return wall;
 	}
 }
-
-//if (idealAngle < 0)
-//idealAngle += 360;
-//
-////Which way to rotate
-//if (currentPosition[2] > safeAddToAngle(idealAngle, -10) && currentPosition[2] < safeAddToAngle(idealAngle, 10)) {
-//Robot.usSensorLeft.ping();
-//try{
-//	Thread.sleep(200);
-//} catch (InterruptedException e){}
-//distanceLeft = Robot.usSensorLeft.getDistance();
-//
-//Robot.debugSet("LD: " + distanceLeft, 0, 5, true);
-//if (distanceLeft > 60){
-//	double turnAngle = safeAddToAngle(currentPosition[2], -60);
-//	
-//	Robot.navigator.turnTo(turnAngle);
-//	odo.getPosition(currentPosition, new boolean[] {true, true, true});
-//
-//	Robot.navigator.travelTo(currentPosition[0] + 35*Math.sin(Math.toRadians(currentPosition[2])), 
-//			currentPosition[1] + 35*Math.cos(currentPosition[2]));
-//	
-//	Robot.navigator.turnTo(previousAngle);
-//	
-//	odo.getPosition(currentPosition, new boolean[] {true, true, true});
-//	
-//	Robot.debugSet("X: " + (currentPosition[0] + 30*Math.sin(Math.toRadians(previousAngle))), 0, 5, true);
-//	Robot.debugSet("Y: " + (currentPosition[1] + 30*Math.cos(Math.toRadians(previousAngle))), 0, 6, true);
-//	
-//	Button.waitForAnyPress();
-//	
-//	Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(previousAngle)), 
-//			currentPosition[1] + 30*Math.cos(previousAngle));
-//	
-//	return;
-//}
-//}
-//
-//if (currentPosition[2] < safeAddToAngle(idealAngle, 10) && currentPosition[2] >= safeAddToAngle(idealAngle, -10)) {
-//Robot.usSensorRight.ping();
-//try{
-//	Thread.sleep(200);
-//} catch (InterruptedException e){}
-//distanceRight = Robot.usSensorRight.getDistance();
-//
-//Robot.debugSet("RD: " + distanceRight, 0, 5, true);
-//if (distanceRight > 60){
-//	
-//	double turnAngle = safeAddToAngle(currentPosition[2], 60);				
-//	
-//	Robot.navigator.turnTo(turnAngle);
-//
-//	odo.getPosition(currentPosition, new boolean[] {true, true, true});
-//	
-//	Robot.navigator.travelTo(currentPosition[0] + 35*Math.sin(Math.toRadians(currentPosition[2])), 
-//			currentPosition[1] + 35*Math.cos(Math.toRadians(currentPosition[2])));
-//	
-//	Robot.navigator.turnTo(previousAngle);
-//	
-//	odo.getPosition(currentPosition, new boolean[] {true, true, true});
-//
-//	Robot.debugSet("X: " + (currentPosition[0] + 30*Math.sin(Math.toRadians(previousAngle))), 0, 5, true);
-//	Robot.debugSet("Y: " + (currentPosition[1] + 30*Math.cos(Math.toRadians(previousAngle))), 0, 6, true);
-//	
-//	Button.waitForAnyPress();
-//	
-//	Robot.navigator.travelTo(currentPosition[0] + 30*Math.sin(Math.toRadians(previousAngle)), 
-//			currentPosition[1] + 30*Math.cos(previousAngle));
-//	
-//	return;
-//}
-//}
