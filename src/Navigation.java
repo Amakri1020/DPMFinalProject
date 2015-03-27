@@ -4,13 +4,18 @@
 public class Navigation extends Thread {
 	
 	private Odometer odo;
-	private static double ANGLE_ERROR = 10;
+	private static double ANGLE_ERROR = 30;
 	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 2;
 	public boolean isNavigating;
 	public boolean isRotating;
 	public int distance = 0;
+	public static double shootingDist = 182.88;
+	public static double tile = 30.48;
+	public static double targetX = 274.32;
+	public static double targetY = 274.32;
+	public static double targetTheta = Math.sqrt( Math.pow(targetX, 2) + Math.pow(targetY, 2) );
 	
 	/**
 	 * @param odo
@@ -18,8 +23,8 @@ public class Navigation extends Thread {
 	 */
 	public Navigation(Odometer odo) {
 		this.odo = odo;
-		Robot.LEFT_WHEEL.setAcceleration(300);
-		Robot.RIGHT_WHEEL.setAcceleration(300);
+		Robot.LEFT_WHEEL.setAcceleration(3000);
+		Robot.RIGHT_WHEEL.setAcceleration(3000);
 	}
 	
 	/**
@@ -72,7 +77,37 @@ public class Navigation extends Thread {
 		isNavigating = true;
 		odo.getPosition(currentPosition, new boolean [] {true, true, true});
 	    hypotenuse = Math.sqrt(Math.pow((x-currentPosition[0]),2) + Math.pow((y-currentPosition[1]), 2));
+	
+	    Robot.debugSet("X: " + x, 0, 5, true);
+	    Robot.debugSet("Y: " + y, 0, 6, true);
+	    
+	    odo.getPosition(currentPosition, new boolean [] {true, true, true});
 		
+		xNow = currentPosition[0];
+		yNow = currentPosition[1];
+		hypotenuse = Math.sqrt(Math.pow(x-xNow,2) + Math.pow(y-yNow,2));
+		dx = x-xNow;
+		dy = y-yNow;
+		thetaNow = currentPosition[2]*Math.PI/180;
+				
+		//Desired angle calculation
+		if (dx == 0 && dy > 0)
+			thetaGo = 0;
+		else if (dx == 0 && dy < 0)
+			thetaGo = Math.PI;
+		else if(dx < 0 && dy > 0)  
+			thetaGo = 3*Math.PI/2 - ( Math.atan(dy/dx) ); 
+		else if(dx < 0 && dy < 0)
+			thetaGo = 3*Math.PI/2 - (Math.atan(dy/dx));
+		else 
+			thetaGo = Math.PI/2 - Math.atan(dy/dx);
+		
+		if (thetaNow*180/Math.PI >= 360)
+			thetaNow = 0;
+
+	    
+	    turnTo(Math.toDegrees(thetaGo));
+	    
 	    //Continue while robot is not at desired position
 		while(hypotenuse >= COORD_ERROR)
 		{	
@@ -122,11 +157,12 @@ public class Navigation extends Thread {
 			//else move forward
 			if(Math.abs(thetaGo - thetaNow) >= Math.toRadians(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toRadians(ANGLE_ERROR)){
 				isRotating = true;
-				turnTo(Math.toDegrees(thetaGo));
-				Robot.setSpeeds(0, 0);
-				try{
-					Thread.sleep(500);
-				} catch (InterruptedException e){}
+				break;
+//				turnTo(Math.toDegrees(thetaGo));
+//				Robot.setSpeeds(0, 0);
+//				try{
+//					Thread.sleep(500);
+//				} catch (InterruptedException e){}
 			}
 			else{
 				Robot.setSpeeds(Robot.FWD_SPEED, 0);

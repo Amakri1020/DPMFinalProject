@@ -3,7 +3,7 @@ import lejos.nxt.Sound;
 import lejos.nxt.LCD;
 
 public class LightLocalizer {
-	private static final double LSENSOR_DISTANCE = 18; //same as below
+	private static final double LSENSOR_DISTANCE = 17.5; //same as below
 	private Odometer odo;
 	private ColorSensor ls;
 	private Navigation nav;
@@ -41,7 +41,6 @@ public class LightLocalizer {
 				if(onLine){
 					//for the first 3 lines, the robot sleeps after detection to prevent re-reads. The sleep is short enough not to affect reading close lines
 					if (i < 3) {
-						Sound.beep();
 
 						try {
 							Thread.sleep(1000);
@@ -51,6 +50,7 @@ public class LightLocalizer {
 					}
 					
 					angles[i] = odo.getTheta();
+					Sound.beep();
 					i++;
 					onLine=false;
 					continue;
