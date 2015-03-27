@@ -6,7 +6,7 @@ public class Robot {
 	public static double[] goalArea = {90, 90};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
-	public static final double WHEEL_BASE = 12.12, US_OFFSET = 0;
+	public static final double WHEEL_BASE = 12.25, US_OFFSET = 6.0;
 	public static final double WHEEL_RADIUS = 2.15;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
@@ -16,6 +16,7 @@ public class Robot {
 	public static final UltrasonicSensor usSensor = new UltrasonicSensor(SensorPort.S1);
 	public static final UltrasonicSensor usSensorLeft = new UltrasonicSensor(SensorPort.S3);
 	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S2);
+	public static final ColorSensor ls = new ColorSensor(SensorPort.S4);
 	
 	public static double FWD_SPEED = 300, TURN_SPEED = 40;
 	
@@ -23,6 +24,7 @@ public class Robot {
 	public static Navigation navigator;
 	public static USLocalizer usLoc;
 	public static ObstacleAvoidance obAvoid;
+	public static LightLocalizer lLoc;
 	
 	/**
 	 * @param args
@@ -33,10 +35,13 @@ public class Robot {
 		odo.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance();
-	/*	Button.waitForAnyPress();
-		usLoc = new USLocalizer(odo, usSensor, navigator);
 		
-		navigator.travelTo(0, 60);
+		
+		Button.waitForAnyPress();
+		usLoc = new USLocalizer(odo, usSensor, navigator);
+		lLoc = new LightLocalizer(odo, ls);
+		
+	/*	navigator.travelTo(0, 60);
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {}
@@ -55,8 +60,8 @@ public class Robot {
 		navigator.turnTo(0);
 		Robot.setSpeeds(0, 0);*/
 		
-		Button.waitForAnyPress();
-		Launcher launcher = new Launcher(3);
+		//Button.waitForAnyPress();
+		//Launcher launcher = new Launcher(3);
 		
 //		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
 //			debugSet("AGAIN", 0, 5, true);
@@ -64,20 +69,25 @@ public class Robot {
 //		}
 		//usLoc.doLocalization();
 		
-		//RConsole.open();
-//		int count = 72;
-//		int arc = 360/count;
-//		int[] dists = usLoc.sweepFull(count);
-//		int[] yx = usLoc.findLocalMinima(dists);
-		/*for (int i = 0; i < 72; i++){
-			RConsole.println(dists[i] + ", ");
-		}
-		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
-		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
-		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));*/
-//		odo.setY(dists[yx[0]] + US_OFFSET);
-//		odo.setX(dists[yx[1]] + US_OFFSET);
-//		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		// RConsole.open();
+		int count = 72;
+		int arc = 360/count;
+		
+		int[] dists = usLoc.sweepFull(count);
+		int[] yx = usLoc.findLocalMinima(dists);
+		lLoc.doLocalization();
+		navigator.travelTo(0,0);
+		navigator.turnTo(0);for (int i = 0; i < 72; i++){
+//			RConsole.println(i+": "+ dists[i] + ", ");
+//		}
+		//RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
+		//RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
+		//RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
+  		//odo.setY(dists[yx[0]] + US_OFFSET-30);
+		//odo.setX(dists[yx[1]] + US_OFFSET-30);
+		//odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		//navigator.travelTo(1,1);
+		//navigator.turnTo(60);
 		//process();
 	}
 	

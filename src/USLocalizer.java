@@ -45,7 +45,15 @@ public class USLocalizer {
 		//rotate until no walls
 		Robot.setSpeeds(0, Robot.TURN_SPEED);
 		while ((getFilteredData() < clipDistance));
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		odo.setTheta(0);
+		Sound.beep();
+
 		
 		int[] distances = new int[count];
 		double arc = 360/count;
@@ -53,9 +61,7 @@ public class USLocalizer {
 		start = odo.getTheta();
 		Robot.setSpeeds(0,Robot.TURN_SPEED);
 		//rotate until he doesnt see a wall
-		while ((getFilteredData() < clipDistance));
-		Sound.beep();
-		
+				
 		for (int i = 0; i < count; i++){
 			target = start + (i*arc);
 			Robot.setSpeeds(0, Robot.TURN_SPEED);
@@ -84,7 +90,7 @@ public class USLocalizer {
 				continue;
 			} else {
 				
-				if(dists[i] < dists[result[0]]){
+				if(dists[i] < dists[result[0]] && (dists[i-1] != clipDistance) && (dists[i] == dists[i-1])){
 					result[0] = i;
 				}
 				//break when distance values start rising again
@@ -94,18 +100,20 @@ public class USLocalizer {
 				}
 			}
 		}
+		
+		
 		//RConsole.println("first indices: " + result[0] + ", " + firstUp);
 		result[0] = ((result[0] + firstUp)/2);
 		
-		int marker = firstUp;
+		/*int marker = firstUp;
 		int pass = 0;
 		
 		//
 		while(dists[marker] >= dists[marker-1] && pass != 2){
 			marker++;
-			if (dists[marker] <= dists[marker-1]){
+			if (dists[marker] <= dists[marker-3]){
 				pass++;
-				//RConsole.println("pass++");
+				RConsole.println("pass++");
 			} else {
 				pass = 0;
 			}
@@ -118,7 +126,7 @@ public class USLocalizer {
 			if(dists[i] == clipDistance){
 				continue;
 			} else {
-				if(dists[i] < dists[result[1]]){
+				if(dists[i] < dists[result[1]] && (dists[i-1] != clipDistance) && (dists[i] == dists[i-1])){
 					result[1] = i;
 				}
 				if( i != 0 && dists[i] > dists[i-1]){
@@ -127,10 +135,12 @@ public class USLocalizer {
 				}
 			}
 		}
+		*/
+		result[1] = result[0] + 18;
 
-		//RConsole.println("second indices: " + result[1] + ", " + secondUp);
+		/*RConsole.println("second indices: " + result[1] + ", " + secondUp);
 		result[1] = ((result[1] + secondUp)/2);
-		//RConsole.println("x facing wall = " + result[1]);
+		RConsole.println("x facing wall = " + result[1]);*/
 		return result;
 	}
 }
