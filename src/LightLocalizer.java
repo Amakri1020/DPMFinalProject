@@ -3,7 +3,7 @@ import lejos.nxt.Sound;
 import lejos.nxt.LCD;
 
 public class LightLocalizer {
-	private static final double LSENSOR_DISTANCE = 17.5; //same as below
+	private static final double LSENSOR_DISTANCE = 13.5; //same as below
 	private Odometer odo;
 	private ColorSensor ls;
 	private Navigation nav;

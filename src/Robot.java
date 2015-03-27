@@ -6,7 +6,7 @@ public class Robot {
 	public static double[] goalArea = {90, 90};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
-	public static final double WHEEL_BASE = 12.48, US_OFFSET = 6.0;
+	public static final double WHEEL_BASE = 11.4, US_OFFSET = 6.0;
 	public static final double WHEEL_RADIUS = 2.12;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
@@ -40,6 +40,25 @@ public class Robot {
 		Button.waitForAnyPress();
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		lLoc = new LightLocalizer(odo, ls);
+		
+//		navigator.turnTo(90);
+//		try{
+//			Thread.sleep(100);
+//		} catch(InterruptedException e){}
+//		navigator.turnTo(180);
+//		try{
+//			Thread.sleep(100);
+//		} catch(InterruptedException e){}
+//		navigator.turnTo(270);
+//		try{
+//			Thread.sleep(100);
+//		} catch(InterruptedException e){}
+//		navigator.turnTo(0);
+//		try{
+//			Thread.sleep(100);
+//		} catch(InterruptedException e){}
+//		
+//		Button.waitForAnyPress();
 		
 		/*navigator.travelTo(0, 60);
 		try {
@@ -86,16 +105,15 @@ public class Robot {
 		lLoc.doLocalization();
 		navigator.travelTo(0,0);
 		navigator.turnTo(0);
+		
 		navigator.travelTo(-Navigation.tile/2 , Navigation.tile); //Nav shoot at point test
-		navigator.travelTo(-Navigation.tile/2, 5*Navigation.tile);
-		navigator.turnTo(45);
-		navigator.travelTo(0*Navigation.tile, 5.5*Navigation.tile);
+		navigator.travelTo(-Navigation.tile/2, 5.5*Navigation.tile);
 		navigator.turnTo(90);
-		navigator.travelTo(1*Navigation.tile, 5.5*Navigation.tile);
-		navigator.turnTo(45);
-		navigator.travelTo(2*Navigation.tile, 6.5*Navigation.tile);
+		navigator.travelTo(1.5*Navigation.tile, 5.5*Navigation.tile);
+		navigator.turnTo(0);
+		navigator.travelTo(1.5*Navigation.tile, 6.5*Navigation.tile);
 		navigator.turnTo(90);
- 		navigator.travelTo(4.5*Navigation.tile, 6.5*Navigation.tile);
+		navigator.travelTo(5*Navigation.tile, 6.5*Navigation.tile);
 		//Go to shooting point(DEMO target)
 		// Algorithm for X and Y  position to shoot =
 		//4*T + (  T*3-     (   shootingDist(cos(theta) or sin(theta)) -  T*2)   )

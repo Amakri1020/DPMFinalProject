@@ -17,7 +17,7 @@ public class USLocalizer {
 		this.us = us;
 		this.nav = nav;
 		
-		// switch off the ultrasonic sensor
+		// switch off the ultrasonic sensor 
 		us.off();
 	}
 	
