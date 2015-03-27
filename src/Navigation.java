@@ -84,9 +84,12 @@ public class Navigation extends Thread {
 			distance = Robot.usSensor.getDistance();
 			
 			if (distance <= 30){
-				Robot.setSpeeds(0, 0);
-				Robot.obAvoid.startAvoidance();
-				return;
+				odo.getPosition(currentPosition, new boolean[]{true, true, true});
+				if(!Robot.obAvoid.isWall(currentPosition, distance)){
+					Robot.setSpeeds(0, 0);
+					Robot.obAvoid.startAvoidance();
+					return;
+				}
 				//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
 			}
 			

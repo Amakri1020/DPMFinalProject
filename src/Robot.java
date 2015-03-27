@@ -6,7 +6,7 @@ public class Robot {
 	public static double[] goalArea = {90, 90};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
-	public static final double WHEEL_BASE = 11.2, US_OFFSET = 0;
+	public static final double WHEEL_BASE = 12.12, US_OFFSET = 0;
 	public static final double WHEEL_RADIUS = 2.15;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
@@ -33,13 +33,35 @@ public class Robot {
 		odo.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance();
-		Button.waitForAnyPress();
+	/*	Button.waitForAnyPress();
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		
-		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
-			debugSet("AGAIN", 0, 5, true);
-			navigator.travelTo(goalArea[0], goalArea[1]);
-		}
+		navigator.travelTo(0, 60);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {}
+		navigator.travelTo(60, 0);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {}
+		navigator.travelTo(60, 60);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {}
+		navigator.travelTo(0, 0);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {}
+		navigator.turnTo(0);
+		Robot.setSpeeds(0, 0);*/
+		
+		Button.waitForAnyPress();
+		Launcher launcher = new Launcher(3);
+		
+//		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
+//			debugSet("AGAIN", 0, 5, true);
+//			navigator.travelTo(goalArea[0], goalArea[1]);
+//		}
 		//usLoc.doLocalization();
 		
 		//RConsole.open();

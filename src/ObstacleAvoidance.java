@@ -7,7 +7,6 @@ public class ObstacleAvoidance {
 	public static Odometer odo;
 	public static boolean avoiding;
 	public static final double ERROR_CORR = 3;
-	public static final int FILTER_OUT = 10;
 	public static double[] currentPosition = new double[3];
 	
 	public ObstacleAvoidance(){
@@ -19,7 +18,7 @@ public class ObstacleAvoidance {
 		int distance;
 		int distanceLeft;
 		int distanceRight;
-		double turnSpeed = -Robot.TURN_SPEED;
+		double turnSpeed = Robot.TURN_SPEED;
 		double previousAngle;
 		
 		avoiding = true;
@@ -54,60 +53,79 @@ public class ObstacleAvoidance {
 			leftLimit = safeAddToAngle(idealAngle, -90);
 			rightLimit = safeAddToAngle(idealAngle, 90);
 			
-			if(turnSpeed < 0){
+			if(turnSpeed > 0){
 				dAngle = currentPosition[2] - rightLimit;
-				if ((dAngle > 180) || ((dAngle < 0) && (dAngle > -180))){
+				if (!(dAngle > 180 || (dAngle < 0 && dAngle > -180))){
 					turnSpeed = -turnSpeed;
 					Robot.setSpeeds(0, turnSpeed);
+					try{
+						Thread.sleep(1000);
+					} catch(InterruptedException e){}
 				}
 			} else {
 				dAngle = currentPosition[2] - leftLimit;
-				if (!((dAngle > 180) || ((dAngle < 0) && (dAngle > -180)))){
+				if (!((dAngle < 180 && dAngle > 0) || dAngle < -180)){
 					turnSpeed = -turnSpeed;
 					Robot.setSpeeds(0, turnSpeed);
+					try{
+						Thread.sleep(1000);
+					} catch(InterruptedException e){}
 				}
 			}
 			
 			if (distance > 60){
-				aroundObstacle = avoidObstacle(turnSpeed);
+				aroundObstacle = avoidObstacle(turnSpeed, previousAngle);
 				if(aroundObstacle)
 					avoiding = false;
 			}
 		}
 	}
 	
-	public static boolean avoidObstacle(double previousTurnSpeed){
+	public static boolean avoidObstacle(double previousTurnSpeed, double previousAngle){
 		Robot.setSpeeds(0, 0);
+		
+		try{
+			Thread.sleep(100);
+		} catch(InterruptedException e){}
+		
 		UltrasonicSensor wallSensor;
 		int preDistance = 0;
 		int distance = 0;
 		int filterControl = 0;
 		
-		if(previousTurnSpeed < 0)
+		if(previousTurnSpeed > 0)
 			wallSensor = Robot.usSensorLeft;
 		else 
 			wallSensor = Robot.usSensorRight;
 		
 		Robot.setSpeeds(Robot.FWD_SPEED, 0);
 		
-		if (!travelUntilClear(wallSensor, 60, 15))
+		if (!travelUntilClear(wallSensor, 60, 0, 12))
 			return false;
 		
 		Robot.setSpeeds(0, 0);
 		
 		Robot.odo.getPosition(currentPosition, new boolean[] {true, true, true});
-		if(previousTurnSpeed < 0)
-			Robot.navigator.turnTo(safeAddToAngle(currentPosition[2], -45));
+		if(previousTurnSpeed > 0)
+			Robot.navigator.turnTo(previousAngle/*safeAddToAngle(currentPosition[2], -45)*/);
 		else
-			Robot.navigator.turnTo(safeAddToAngle(currentPosition[2], 45));
+			Robot.navigator.turnTo(previousAngle/*safeAddToAngle(currentPosition[2], 45)*/);
 		
-		if(!travelUntilClear(wallSensor, 40, 5))
+		Robot.setSpeeds(0, 0);
+		
+		try{
+			Thread.sleep(500);
+		} catch(InterruptedException e){}
+		
+		Robot.setSpeeds(Robot.FWD_SPEED, 0);
+		
+		if(!travelUntilClear(wallSensor, 80, 0, 5))
 			return false;
 		
 		return true;
 	}
 	
-	public static boolean travelUntilClear(UltrasonicSensor wallSensor, int minDistance, double closestAllowable){
+	public static boolean travelUntilClear(UltrasonicSensor wallSensor, int minDistance, double closestAllowable, int filterCount){
 		int preDistance = 0;
 		int distance = 0;
 		int filterControl = 0;
@@ -119,7 +137,7 @@ public class ObstacleAvoidance {
 			} catch (InterruptedException e){}
 			preDistance = wallSensor.getDistance();
 			
-			if (preDistance >= 60 && filterControl < FILTER_OUT) {
+			if (preDistance >= 60 && filterControl < filterCount) {
 				// bad value, do not set the distance var, however do increment the filter value
 				filterControl ++;
 			} else if (preDistance >= 60){
