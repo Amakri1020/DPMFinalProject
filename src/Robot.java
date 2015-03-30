@@ -3,11 +3,16 @@ import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
-	public static double[] goalArea = {90, 90};
+	public static double[] goalArea = {60, 60};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
-	public static final double WHEEL_BASE = 11.4, US_OFFSET = 6.0;
+	public static final double WHEEL_BASE = 11.4;
+	public static final double US_OFFSET = 6.0;
 	public static final double WHEEL_RADIUS = 2.12;
+	public static final double LSENSOR_DIST = 13.5;
+	public static final double FWD_SPEED = 300;
+	public static final double TURN_SPEED = 40;
+	public static final double LIGHT_THRESH = 440;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
@@ -18,9 +23,8 @@ public class Robot {
 	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S2);
 	public static final ColorSensor ls = new ColorSensor(SensorPort.S4);
 	
-	public static double FWD_SPEED = 300, TURN_SPEED = 40;
-	
 	public static Odometer odo;
+	public static OdometryCorrection odoCorr;
 	public static Navigation navigator;
 	public static USLocalizer usLoc;
 	public static ObstacleAvoidance obAvoid;
@@ -31,25 +35,30 @@ public class Robot {
 	 * Initializes threads for all constant autonomous functions
 	 */
 	public static void main(String[] args) {
+		
+		Button.waitForAnyPress();
+		
 		odo = new Odometer();
 		odo.start();
+		odoCorr = new OdometryCorrection(odo);
+		odoCorr.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance();
 		
-		
-		Button.waitForAnyPress();
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		lLoc = new LightLocalizer(odo, ls);
+		
+		navigator.travelTo(goalArea[0], goalArea[1]);
 		
 //		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
 //			debugSet("AGAIN", 0, 5, true);
 //			navigator.travelTo(goalArea[0], goalArea[1]);
 //		}
-//		
-//		Button.waitForAnyPress();
-		//usLoc.doLocalization();
+	
+		Button.waitForAnyPress();
+//		usLoc.doLocalization();
 		
-		// RConsole.open();
+//		RConsole.open();
 		int count = 72;
 		int arc = 360/count;
 		
@@ -70,9 +79,9 @@ public class Robot {
 //		for (int i = 0; i < 72; i++){
 //			RConsole.println(i+": "+ dists[i] + ", ");
 //		}
-		//RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
-		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
-		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
+//		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
+//		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
+//		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
 		process();
 	}
 	

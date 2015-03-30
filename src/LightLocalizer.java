@@ -3,11 +3,11 @@ import lejos.nxt.Sound;
 import lejos.nxt.LCD;
 
 public class LightLocalizer {
-	private static final double LSENSOR_DISTANCE = 13.5; //same as below
+	private final int ANGLE_OFFSET = 3;	//chosen based on experimental observations
+	
 	private Odometer odo;
 	private ColorSensor ls;
 	private Navigation nav;
-	private final int ANGLE_OFFSET = 3, LIGHT_THRESH = 440;	//chosen based on experimental observations
 	
 	public LightLocalizer(Odometer odo, ColorSensor ls) {
 		this.odo = odo;
@@ -31,7 +31,7 @@ public class LightLocalizer {
 				currentLightVal = ls.getNormalizedLightValue();
 				LCD.drawString("Light: " + currentLightVal, 0, 6);
 				//while the threshold is not met
-				if(currentLightVal < LIGHT_THRESH){
+				if(currentLightVal < Robot.LIGHT_THRESH){
 					onLine = true;
 				} else {
 					onLine = false;
@@ -63,8 +63,8 @@ public class LightLocalizer {
 		double dX = Math.toRadians(angles[0]-angles[2]);
 		double dY = Math.toRadians(angles[1]-angles[3]);
 		double dTheta = angles[3]+Math.toDegrees(dY/2)-270;//error in theta
-		odo.setX(-(LSENSOR_DISTANCE*Math.cos(dY / 2.0)));
-		odo.setY(-(LSENSOR_DISTANCE*Math.cos(dX / 2.0)));
+		odo.setX(-(Robot.LSENSOR_DIST*Math.cos(dY / 2.0)));
+		odo.setY(-(Robot.LSENSOR_DIST*Math.cos(dX / 2.0)));
 		odo.setTheta(Math.toRadians(odo.getTheta() - dTheta + ANGLE_OFFSET));
 
 		Robot.setSpeeds(0, 0);

@@ -4,10 +4,11 @@ import lejos.nxt.UltrasonicSensor;
 
 public class ObstacleAvoidance {
 
-	public static Odometer odo;
 	public static boolean avoiding;
 	public static final double ERROR_CORR = 3;
 	public static double[] currentPosition = new double[3];
+
+	public static Odometer odo;
 	
 	public ObstacleAvoidance(){
 		odo = Robot.odo;
@@ -28,7 +29,7 @@ public class ObstacleAvoidance {
 		
 		Robot.debugSet("Avoidance: Mid", 0, 5, true);
 		
-		double leftLimit;
+		double leftLimit;		
 		double rightLimit;
 		double dAngle;
 		boolean aroundObstacle = false;

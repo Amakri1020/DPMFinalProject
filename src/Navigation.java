@@ -3,7 +3,6 @@
 
 public class Navigation extends Thread {
 	
-	private Odometer odo;
 	private static double ANGLE_ERROR = 10;
 	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
@@ -16,6 +15,8 @@ public class Navigation extends Thread {
 	public static double targetX = 274.32;
 	public static double targetY = 274.32;
 	public static double targetTheta = Math.sqrt( Math.pow(targetX, 2) + Math.pow(targetY, 2) );
+	
+	private Odometer odo;
 	
 	/**
 	 * @param odo

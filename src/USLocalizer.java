@@ -3,14 +3,13 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.nxt.comm.RConsole;
 
 public class USLocalizer {
-	public static double ROTATION_SPEED = 30;
-
-	private Odometer odo;
-	private UltrasonicSensor us;
-	private Navigation nav;
 	private static int THETA_OFFSET = 0, ANG_THRSH = 2;
 	
 	public static int clipDistance = 60;
+	
+	private Odometer odo;
+	private UltrasonicSensor us;
+	private Navigation nav;
 	
 	public USLocalizer(Odometer odo, UltrasonicSensor us, Navigation nav) {
 		this.odo = odo;
