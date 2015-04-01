@@ -48,7 +48,7 @@ public class Robot {
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		lLoc = new LightLocalizer(odo, ls);
 		
-		navigator.travelTo(goalArea[0], goalArea[1]);
+		/*navigator.travelTo(goalArea[0], goalArea[1]);
 		
 //		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
 //			debugSet("AGAIN", 0, 5, true);
@@ -82,7 +82,8 @@ public class Robot {
 //		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
 //		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
 //		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
-		process();
+		process();*/
+		TestRoutines.correctionTest();
 	}
 	
 	

@@ -69,4 +69,12 @@ public class TestRoutines {
 		launcher.fire(3);
 	}
 	
+	public static void correctionTest(){
+		Robot.navigator.travelTo(0,2*Navigation.tile);
+		Robot.navigator.travelTo(2*Navigation.tile,2*Navigation.tile);
+		Robot.navigator.travelTo(2*Navigation.tile,0);
+		Robot.navigator.travelTo(0,0);
+		Button.waitForAnyPress();
+	}
+	
 }
