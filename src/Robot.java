@@ -50,9 +50,9 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
+		process(1,1,1,1,1);
 		
-		
-		navigator.travelTo(goalArea[0], goalArea[1]);
+		/*navigator.travelTo(goalArea[0], goalArea[1]);
 		
 		while (odo.getX() < goalArea[0] - 5 && odo.getY() < goalArea[1] - 5){
 			navigator.travelTo(goalArea[0], goalArea[1]);
@@ -85,7 +85,8 @@ public class Robot {
 //		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
 //		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
 //		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
-		process();
+		*/
+		process(1,1,1,1,1);
 	}
 	
 	
@@ -94,9 +95,115 @@ public class Robot {
 	/**
 	 * Contains behaviour functionality for robot
 	 */
-	public static void process(){
+	public static void process(int map, int t1x, int t1y, int t2x, int t2y){
+		int count = 72;
+		int arc = 360/count;
+		
+		int[] dists = usLoc.sweepFull(count);
+		int[] yx = usLoc.findLocalMinima(dists);
+  		odo.setY(dists[yx[0]] + US_OFFSET-30);
+		odo.setX(dists[yx[1]] + US_OFFSET-30);
+		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		navigator.travelTo(4, 4);
+		navigator.turnTo(60);
+		lLoc.doLocalization();
+		//navigator.travelTo(0,0);
+		//navigator.turnTo(0);
+		
+		if(map == 1){
+			navigateMapOne();
+		} else if(map == 2){
+			navigateMapTwo();
+		} else if(map == 3){
+			navigateMapThree();
+		}
+		
+		navigator.travelTo(11*Navigation.tile, 11*Navigation.tile);
+		
+		dists = usLoc.sweepFull(count);
+		yx = usLoc.findLocalMinima(dists);
+  		odo.setY(dists[yx[0]] + US_OFFSET-30);
+		odo.setX(dists[yx[1]] + US_OFFSET-30);
+		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		navigator.travelTo(4, 4);
+		navigator.turnTo(60);
+		lLoc.doLocalization();
+		odo.setTheta(odo.getTheta() + 180);
+		odo.setX(10*Navigation.tile - odo.getX());
+		odo.setY(10*Navigation.tile - odo.getY());
+		
+		//navigator.travelTo(t1x*Navigation.tile - LAUNCH_OFFSET,t1y*Navigation.tile - LAUNCH_OFFSET);
+		//launcher.fire(3);
+		//navigator.travelTo(t2x*Navigation.tile - LAUNCH_OFFSET,t2y*Navigation.tile - LAUNCH_OFFSET);
+		//launcher.fire(3);
+		
+		if(map == 1){
+			navigateBackMapOne();
+		} else if(map == 2){
+			navigateBackMapTwo();
+		} else if(map == 3){
+			navigateBackMapThree();
+		}
+		
+		dists = usLoc.sweepFull(count);
+		yx = usLoc.findLocalMinima(dists);
+  		odo.setY(dists[yx[0]] + US_OFFSET-30);
+		odo.setX(dists[yx[1]] + US_OFFSET-30);
+		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		navigator.travelTo(4, 4);
+		navigator.turnTo(60);
+		lLoc.doLocalization();
+
 	}
 	
+	private static void navigateBackMapThree() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private static void navigateBackMapTwo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private static void navigateBackMapOne() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private static void navigateMapThree() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private static void navigateMapTwo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private static void navigateMapOne() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
 	/**
 	 * @param info
 	 * @param x

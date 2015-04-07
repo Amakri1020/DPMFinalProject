@@ -65,7 +65,8 @@ public class TestRoutines {
 		Robot.navigator.travelTo(145, 145);
 		Robot.navigator.turnTo(45);
 
-		Launcher launcher = new Launcher(3);
+		Launcher launcher = new Launcher();
+		launcher.fire(3);
 	}
 	
 }
