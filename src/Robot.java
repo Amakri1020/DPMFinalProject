@@ -3,7 +3,7 @@ import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
-	public static double[] goalArea = {120, 0};
+	public static double[] goalArea = {60, 60};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
 	public static final double WHEEL_BASE = 11.4;
