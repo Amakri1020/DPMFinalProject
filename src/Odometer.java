@@ -60,7 +60,7 @@ public class Odometer extends Thread {
 				deltaD = 0.5*(distL + distR);
 				
 				//Difference in heading from previous reading
-				deltaT = (distL - distR) / Robot.WHEEL_BASE;
+				deltaT = (distL - distR) / (Robot.WHEEL_BASE * Robot.ANGLE_CORRECTION);
 			
 				
 				//Update heading

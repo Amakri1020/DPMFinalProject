@@ -14,6 +14,8 @@ public class Robot {
 	public static final double TURN_SPEED = 40;
 	public static final double LIGHT_THRESH = 440;
 	
+	public static final double ANGLE_CORRECTION = 1.00648;
+	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
@@ -48,7 +50,10 @@ public class Robot {
 		usLoc = new USLocalizer(odo, usSensor, navigator);
 		lLoc = new LightLocalizer(odo, ls);
 		
-		navigator.travelTo(goalArea[0], goalArea[1]);
+		TestRoutines tRoutine = new TestRoutines();
+		tRoutine.turnTest();
+		
+//		navigator.travelTo(goalArea[0], goalArea[1]);
 		
 //		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
 //			debugSet("AGAIN", 0, 5, true);
