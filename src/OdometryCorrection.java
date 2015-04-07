@@ -57,13 +57,10 @@ public class OdometryCorrection extends Thread {
 					if (Math.abs(errorX) < Math.abs(errorY)){
 						double newX = currentPosition[0] + errorX;
 						odometer.setPosition(new double[] {newX, 0, 0}, new boolean[] {true, false, false});
-						Robot.debugSet("FIRST X: " + errorX, 0, 5, true);
 					} else {
 						double newY = currentPosition[1] + errorY;
 						odometer.setPosition(new double[] {0, newY, 0}, new boolean[] {false, true, false});
-						Robot.debugSet("FIRST Y: " + errorY, 0, 5, true);
 					}
-					Button.waitForAnyPress();
 				}
 			}
 

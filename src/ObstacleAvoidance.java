@@ -22,7 +22,9 @@ public class ObstacleAvoidance {
 		
 		avoiding = true;
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
-		
+		//If it gets too close
+		//Conditions for manuvering mapped zone
+		//Conditional BackTracking from culidasac
 		previousAngle = currentPosition[2];
 		
 		double idealAngle = Math.toDegrees(Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1])));
@@ -84,7 +86,7 @@ public class ObstacleAvoidance {
 		Robot.setSpeeds(0, 0);
 		
 		try{
-			Thread.sleep(100);
+			Thread.sleep(300);
 		} catch(InterruptedException e){}
 		
 		UltrasonicSensor wallSensor;
@@ -102,10 +104,24 @@ public class ObstacleAvoidance {
 		Robot.setSpeeds(0, 0);
 		
 		Robot.odo.getPosition(currentPosition, new boolean[] {true, true, true});
+		
 		if(previousTurnSpeed > 0)
-			Robot.navigator.turnTo(previousAngle);
-		else
-			Robot.navigator.turnTo(previousAngle);
+			Robot.navigator.turnTo(safeAddToAngle(currentPosition[2], -45));
+		else 
+			Robot.navigator.turnTo(safeAddToAngle(currentPosition[2], 45));		
+	
+		Robot.setSpeeds(0, 0);
+		
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e1) {}
+		
+		Robot.setSpeeds(Robot.FWD_SPEED, 0);
+		
+		if (!travelUntilClear(wallSensor, 30, 0, 10))
+			return false;
+		
+		Robot.navigator.turnTo(previousAngle);
 		
 		Robot.setSpeeds(0, 0);
 		
@@ -115,8 +131,10 @@ public class ObstacleAvoidance {
 		
 		Robot.setSpeeds(Robot.FWD_SPEED, 0);
 		
-		if(!travelUntilClear(wallSensor, 80, 0, 5))
+		if(!travelUntilClear(wallSensor, 60, 0, 5))
 			return false;
+		
+		Robot.setSpeeds(0, 0);
 		
 		return true;
 	}

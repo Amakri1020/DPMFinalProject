@@ -24,8 +24,8 @@ public class Navigation extends Thread {
 	 */
 	public Navigation(Odometer odo) {
 		this.odo = odo;
-		Robot.LEFT_WHEEL.setAcceleration(3000);
-		Robot.RIGHT_WHEEL.setAcceleration(3000);
+		Robot.LEFT_WHEEL.setAcceleration(300);
+		Robot.RIGHT_WHEEL.setAcceleration(300);
 	}
 	
 	/**
@@ -120,8 +120,8 @@ public class Navigation extends Thread {
 			distance = Robot.usSensor.getDistance();
 			
 			if (distance <= 30){
-				odo.getPosition(currentPosition, new boolean[]{true, true, true});
-				if(!Robot.obAvoid.isWall(currentPosition, distance)){
+				if (false){
+					odo.getPosition(currentPosition, new boolean[]{true, true, true});
 					Robot.setSpeeds(0, 0);
 					Robot.obAvoid.startAvoidance();
 					return;
