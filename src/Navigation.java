@@ -114,18 +114,14 @@ public class Navigation extends Thread {
 		{	
 			
 			Robot.usSensor.ping();
-			try{
-				Thread.sleep(100);
-			} catch (InterruptedException e){}
+			try{ Thread.sleep(100);} catch (InterruptedException e){}
 			distance = Robot.usSensor.getDistance();
 			
-			if (distance <= 30){
+			if (distance <= 20){
 				odo.getPosition(currentPosition, new boolean[]{true, true, true});
-				if(!Robot.obAvoid.isWall(currentPosition, distance)){
-					Robot.setSpeeds(0, 0);
-					Robot.obAvoid.startAvoidance();
-					return;
-				}
+				Robot.setSpeeds(0, 0);
+				Robot.obAvoid.startAvoidance();
+				return;
 				//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
 			}
 			
@@ -209,8 +205,4 @@ public class Navigation extends Thread {
 	private static int convertDistance(double radius, double distance){
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
-	/*private boolean isOffTarget(double x, double y){
-		return (Math.abs(x - odo.getX()) > COORD_ERROR || Math.abs(y - odo.getY()) > COORD_ERROR);
-	}*/
-
 }

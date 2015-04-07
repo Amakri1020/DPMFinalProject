@@ -7,7 +7,6 @@ public class LightLocalizer {
 	
 	private Odometer odo;
 	private ColorSensor ls;
-	private Navigation nav;
 	
 	public LightLocalizer(Odometer odo, ColorSensor ls) {
 		this.odo = odo;

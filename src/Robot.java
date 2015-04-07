@@ -3,7 +3,7 @@ import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
-	public static double[] goalArea = {60, 60};
+	public static double[] goalArea = {30, 150};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
 	public static final double WHEEL_BASE = 11.4;
@@ -14,7 +14,7 @@ public class Robot {
 	public static final double TURN_SPEED = 40;
 	public static final double LIGHT_THRESH = 440;
 	
-	public static final double ANGLE_CORRECTION = 1.00648;
+	public static final double ANGLE_CORRECTION = 1.013;
 	
 	public static final NXTRegulatedMotor LEFT_WHEEL = Motor.A;
 	public static final NXTRegulatedMotor RIGHT_WHEEL = Motor.B;
@@ -31,6 +31,7 @@ public class Robot {
 	public static USLocalizer usLoc;
 	public static ObstacleAvoidance obAvoid;
 	public static LightLocalizer lLoc;
+	public static Launcher launcher;
 	
 	/**
 	 * @param args
@@ -42,23 +43,20 @@ public class Robot {
 		
 		odo = new Odometer();
 		odo.start();
-		odoCorr = new OdometryCorrection(odo);
-		odoCorr.start();
+		//odoCorr = new OdometryCorrection(odo);
+		//odoCorr.start();
 		navigator = new Navigation(odo);
-		obAvoid = new ObstacleAvoidance();
+		obAvoid = new ObstacleAvoidance(odo);
 		
-		usLoc = new USLocalizer(odo, usSensor, navigator);
+		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
 		
-		TestRoutines tRoutine = new TestRoutines();
-		tRoutine.turnTest();
 		
-//		navigator.travelTo(goalArea[0], goalArea[1]);
+		navigator.travelTo(goalArea[0], goalArea[1]);
 		
-//		while (odo.getX() < goalArea[0] && odo.getY() < goalArea[1]){
-//			debugSet("AGAIN", 0, 5, true);
-//			navigator.travelTo(goalArea[0], goalArea[1]);
-//		}
+		while (odo.getX() < goalArea[0] - 5 && odo.getY() < goalArea[1] - 5){
+			navigator.travelTo(goalArea[0], goalArea[1]);
+		}
 	
 		Button.waitForAnyPress();
 //		usLoc.doLocalization();

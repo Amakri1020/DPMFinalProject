@@ -7,13 +7,13 @@ public class Odometer extends Thread {
 	//Robot's position
 	private double x, y, theta;
 	
-    public static final int SINTERVAL = 50;  /* A 20Hz sampling rate */
-    public static final int SLEEPINT = 500;  /* Display update 2Hz */
+    private static final int SINTERVAL = 50;  /* A 20Hz sampling rate */
+    private static final int SLEEPINT = 500;  /* Display update 2Hz */
     
-    public static int lastTachoL;          /* Tacho L at last sample */
-    public static int lastTachoR;          /* Tacho R at last sample */
-    public static int nowTachoL;           /* Current tacho L */
-    public static int nowTachoR;           /* Current tacho R */
+    private static int lastTachoL;          /* Tacho L at last sample */
+    private static int lastTachoR;          /* Tacho R at last sample */
+    private static int nowTachoL;           /* Current tacho L */
+    private static int nowTachoR;           /* Current tacho R */
 
 	//Odometer update period, in ms
 	private static final long ODOMETER_PERIOD = 25;

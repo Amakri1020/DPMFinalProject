@@ -5,17 +5,17 @@ import lejos.nxt.*;
  */
 
 public class OdometryCorrection extends Thread {
-	private static final long CORRECTION_PERIOD = 10;
-	private static final int UNSAFE_CORRECTION_ERROR = 5;
+	public static final long CORRECTION_PERIOD = 10;
+	public static final int UNSAFE_CORRECTION_ERROR = 5;
 	
 	private double[] currentPosition = new double[3];
 	private double[] sensorPosition = new double[2]; //{x, y}
 	
-	private Odometer odometer;
+	private Odometer odo;
 	
 	// constructor
 	public OdometryCorrection(Odometer odometer) {
-		this.odometer = odometer;
+		this.odo = odometer;
 	}
 
 	// run method (required for Thread)
@@ -39,7 +39,7 @@ public class OdometryCorrection extends Thread {
 				
 				//Get position of sensor based on distance from wheel base, heading, and current wheel base
 				//coordinates
-				odometer.getPosition(currentPosition, new boolean[] { true, true, true });
+				odo.getPosition(currentPosition, new boolean[] { true, true, true });
 				currentPosition[2] = currentPosition[2] * Math.PI / 180;
 				sensorPosition[0] = currentPosition[0] - Robot.LSENSOR_DIST*Math.sin(currentPosition[2]);
 				sensorPosition[1] = currentPosition[1] - Robot.LSENSOR_DIST*Math.cos(currentPosition[2]);
@@ -56,11 +56,11 @@ public class OdometryCorrection extends Thread {
 				if(!(Math.abs(errorX) < UNSAFE_CORRECTION_ERROR && Math.abs(errorY) < UNSAFE_CORRECTION_ERROR)){
 					if (Math.abs(errorX) < Math.abs(errorY)){
 						double newX = currentPosition[0] + errorX;
-						odometer.setPosition(new double[] {newX, 0, 0}, new boolean[] {true, false, false});
+						odo.setPosition(new double[] {newX, 0, 0}, new boolean[] {true, false, false});
 						Robot.debugSet("FIRST X: " + errorX, 0, 5, true);
 					} else {
 						double newY = currentPosition[1] + errorY;
-						odometer.setPosition(new double[] {0, newY, 0}, new boolean[] {false, true, false});
+						odo.setPosition(new double[] {0, newY, 0}, new boolean[] {false, true, false});
 						Robot.debugSet("FIRST Y: " + errorY, 0, 5, true);
 					}
 					Button.waitForAnyPress();

@@ -9,12 +9,10 @@ public class USLocalizer {
 	
 	private Odometer odo;
 	private UltrasonicSensor us;
-	private Navigation nav;
 	
-	public USLocalizer(Odometer odo, UltrasonicSensor us, Navigation nav) {
+	public USLocalizer(Odometer odo, UltrasonicSensor us) {
 		this.odo = odo;
 		this.us = us;
-		this.nav = nav;
 		
 		// switch off the ultrasonic sensor 
 		us.off();
