@@ -4,155 +4,104 @@ import lejos.nxt.UltrasonicSensor;
 
 public class ObstacleAvoidance {
 
+	public static final int COUNTER_TIME = 50;
+	public static final double ERROR_CORR = 5;
+	private static double[] currentPosition = new double[3];
 	public static boolean avoiding;
-	public static final double ERROR_CORR = 3;
-	public static double[] currentPosition = new double[3];
 
-	public static Odometer odo;
+	private Odometer odo;
 	
-	public ObstacleAvoidance(){
-		odo = Robot.odo;
+	public ObstacleAvoidance(Odometer odometer){
+		this.odo = odometer;
 		avoiding = true;
 	}
 	
-	public static void startAvoidance(){
-		int distance;
-		double turnSpeed = Robot.TURN_SPEED;
-		double previousAngle;
-		
-		avoiding = true;
+	public void startAvoidance(){
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
+		int rightDistance;
+		int leftDistance;
 		
-		previousAngle = currentPosition[2];
-		
-		double idealAngle = Math.toDegrees(Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1])));
-		
-		Robot.debugSet("Avoidance: Mid", 0, 5, true);
-		
-		double leftLimit;		
-		double rightLimit;
-		double dAngle;
-		boolean aroundObstacle = false;
-		
-		Robot.setSpeeds(0, turnSpeed);
-		
-		while(avoiding){
-			Robot.usSensor.ping();
-			try{
-				Thread.sleep(200);
-			} catch (InterruptedException e){}
-			distance = Robot.usSensor.getDistance();
-			
-			odo.getPosition(currentPosition, new boolean[] {true, true, true});
-			
-			idealAngle = Math.toDegrees(Math.atan((Robot.goalArea[0] - currentPosition[0]) / (Robot.goalArea[1] - currentPosition[1])));
-			if (idealAngle < 0)
-				idealAngle += 360;
-			
-			leftLimit = safeAddToAngle(idealAngle, -90);
-			rightLimit = safeAddToAngle(idealAngle, 90);
-			
-			if(turnSpeed > 0){
-				dAngle = currentPosition[2] - rightLimit;
-				if (!(dAngle > 180 || (dAngle < 0 && dAngle > -180))){
-					turnSpeed = -turnSpeed;
-					Robot.setSpeeds(0, turnSpeed);
-					try{
-						Thread.sleep(1000);
-					} catch(InterruptedException e){}
-				}
-			} else {
-				dAngle = currentPosition[2] - leftLimit;
-				if (!((dAngle < 180 && dAngle > 0) || dAngle < -180)){
-					turnSpeed = -turnSpeed;
-					Robot.setSpeeds(0, turnSpeed);
-					try{
-						Thread.sleep(1000);
-					} catch(InterruptedException e){}
-				}
-			}
-			
-			if (distance > 60){
-				aroundObstacle = avoidObstacle(turnSpeed, previousAngle);
-				if(aroundObstacle)
-					avoiding = false;
-			}
+		Robot.usSensorRight.ping();
+		try{Thread.sleep(200);}catch (InterruptedException e){}
+		rightDistance = Robot.usSensorRight.getDistance();
+		if (rightDistance > 60){
+			avoidRight();
+			return;
 		}
-	}
-	
-	public static boolean avoidObstacle(double previousTurnSpeed, double previousAngle){
-		Robot.setSpeeds(0, 0);
 		
-		try{
-			Thread.sleep(100);
-		} catch(InterruptedException e){}
+		Robot.usSensorLeft.ping();
+		try{Thread.sleep(200);}catch (InterruptedException e){}
+		leftDistance = Robot.usSensorLeft.getDistance();
+		if (leftDistance > 60){
+			avoidLeft();
+			return;
+		}
 		
-		UltrasonicSensor wallSensor;
-		
-		if(previousTurnSpeed > 0)
-			wallSensor = Robot.usSensorLeft;
-		else 
-			wallSensor = Robot.usSensorRight;
-		
-		Robot.setSpeeds(Robot.FWD_SPEED, 0);
-		
-		if (!travelUntilClear(wallSensor, 60, 0, 12))
-			return false;
-		
-		Robot.setSpeeds(0, 0);
-		
-		Robot.odo.getPosition(currentPosition, new boolean[] {true, true, true});
-		if(previousTurnSpeed > 0)
-			Robot.navigator.turnTo(previousAngle);
+		odo.getPosition(currentPosition, new boolean[]{true, true, true});
+		if (currentPosition[0] > currentPosition[1])
+			avoidLeft();
 		else
-			Robot.navigator.turnTo(previousAngle);
-		
-		Robot.setSpeeds(0, 0);
-		
-		try{
-			Thread.sleep(500);
-		} catch(InterruptedException e){}
-		
-		Robot.setSpeeds(Robot.FWD_SPEED, 0);
-		
-		if(!travelUntilClear(wallSensor, 80, 0, 5))
-			return false;
-		
-		return true;
+			avoidRight();
 	}
 	
-	public static boolean travelUntilClear(UltrasonicSensor wallSensor, int minDistance, double closestAllowable, int filterCount){
-		int preDistance = 0;
-		int distance = 0;
-		int filterControl = 0;
+	public boolean avoidRight()
+	{
+		UltrasonicSensor wallSensor = Robot.usSensorLeft;
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), 90));
 		
-		while (distance < minDistance){
-			wallSensor.ping();
-			try{
-				Thread.sleep(50);
-			} catch (InterruptedException e){}
-			preDistance = wallSensor.getDistance();
-			
-			if (preDistance >= 60 && filterControl < filterCount) {
-				// bad value, do not set the distance var, however do increment the filter value
-				filterControl ++;
-			} else if (preDistance >= 60){
-				// true 255, therefore set distance to 255
-				distance = preDistance;
-			} else {
-				// distance went below 255, therefore reset everything.
-				filterControl = 0;
-				distance = preDistance;
-			}
-			
-			if (distance < closestAllowable){
-				return false;
-			}
+		//Initiate PController
+		PController pCont = new PController(20, 3, Robot.RIGHT_WHEEL);
+		
+		//Calculate the linear equation for the current trajectory so it can find the path later on
+		odo.getPosition(currentPosition, new boolean[]{true, true, true});
+		double slope = (Robot.goalArea[1] - currentPosition[1])/(Robot.goalArea[0] - currentPosition[0]);
+		double b0 = Robot.goalArea[1] - slope*Robot.goalArea[0];
+		double b = Double.MAX_VALUE; //Initial value out of range
+		int counter = 0;
+		int distance;
+		
+		//PController while loop
+		while ((Math.abs(b - b0) > ERROR_CORR) || counter < COUNTER_TIME){
+			distance = wallSensor.getDistance();
+			pCont.processUSData(distance);
+			odo.getPosition(currentPosition, new boolean[] {true, true, true});
+			b = currentPosition[1] - slope*currentPosition[0];
+			counter += 1;
 		}
+		
 		return true;
 	}
 	
-	public static double safeAddToAngle(double angle, double add){
+	public boolean avoidLeft()
+	{
+		UltrasonicSensor wallSensor = Robot.usSensorRight;
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -90));
+		
+		//Initiate PController
+		PController pCont = new PController(20, 3, Robot.LEFT_WHEEL);
+		
+		//Calculate the linear equation for the current trajectory so it can find the path later on
+		odo.getPosition(currentPosition, new boolean[]{true, true, true});
+		double slope = (Robot.goalArea[1] - currentPosition[1])/(Robot.goalArea[0] - currentPosition[0]);
+		double b0 = Robot.goalArea[1] - slope*Robot.goalArea[0];
+		double b = Double.MAX_VALUE; //Initial value out of range
+		int counter = 0;
+		int distance;
+		
+		//PController while loop
+		while ((Math.abs(b - b0) > ERROR_CORR) || counter < COUNTER_TIME){
+			distance = wallSensor.getDistance();
+			pCont.processUSData(distance);
+			odo.getPosition(currentPosition, new boolean[] {true, true, true});
+			b = currentPosition[1] - slope*currentPosition[0];
+			counter += 1;
+		}
+		
+		return true;
+	}
+	
+	public static double safeAddToAngle(double angle, double add)
+	{
 		angle += add;
 		if (angle < 0)
 			angle += 360;
@@ -161,25 +110,4 @@ public class ObstacleAvoidance {
 		return angle;
 	}
 	
-	public static boolean isWall(double[] currentPosition, int distance){
-		boolean wall = false;
-		
-		if (currentPosition[2] < 180){
-			if (distance + ERROR_CORR <= Math.abs(currentPosition[0] / Math.sin(Math.toRadians(currentPosition[2]))))
-				wall = true;
-		} else {
-			if (distance + ERROR_CORR <= Math.abs((Robot.FIELD_SIZE[0] - currentPosition[0]) / Math.sin(Math.toRadians(currentPosition[2]))))
-				wall = true;
-		}
-		
-		if (currentPosition[2] < 90 || currentPosition[2] > 270){
-			if (distance + ERROR_CORR <= Math.abs((Robot.FIELD_SIZE[1] - currentPosition[1]) / Math.cos(Math.toRadians(currentPosition[2]))))
-				wall = true;
-		} else {
-			if (distance + ERROR_CORR <= Math.abs(currentPosition[1] / Math.cos(Math.toRadians(currentPosition[2]))))
-				wall = true;
-		}
-		
-		return wall;
-	}
 }
