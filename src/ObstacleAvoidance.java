@@ -5,7 +5,7 @@ import lejos.nxt.UltrasonicSensor;
 public class ObstacleAvoidance {
 
 	public static final int COUNTER_TIME = 50;
-	public static final double ERROR_CORR = 5;
+	public static final double ERROR_CORR = 2;
 	private static double[] currentPosition = new double[3];
 	public static boolean avoiding;
 
@@ -18,6 +18,7 @@ public class ObstacleAvoidance {
 	
 	public void startAvoidance(){
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
+		
 		int rightDistance;
 		int leftDistance;
 		
@@ -25,7 +26,7 @@ public class ObstacleAvoidance {
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		rightDistance = Robot.usSensorRight.getDistance();
 		if (rightDistance > 60){
-			avoidRight();
+			avoidRight(Robot.usSensorLeft);
 			return;
 		}
 		
@@ -33,20 +34,19 @@ public class ObstacleAvoidance {
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		leftDistance = Robot.usSensorLeft.getDistance();
 		if (leftDistance > 60){
-			avoidLeft();
+			avoidLeft(Robot.usSensorRight);
 			return;
 		}
 		
 		odo.getPosition(currentPosition, new boolean[]{true, true, true});
 		if (currentPosition[0] > currentPosition[1])
-			avoidLeft();
+			avoidLeft(Robot.usSensorRight);
 		else
-			avoidRight();
+			avoidRight(Robot.usSensorLeft);
 	}
 	
-	public boolean avoidRight()
+	public boolean avoidRight(UltrasonicSensor wallSensor)
 	{
-		UltrasonicSensor wallSensor = Robot.usSensorLeft;
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), 90));
 		
 		//Initiate PController
@@ -61,7 +61,9 @@ public class ObstacleAvoidance {
 		int distance;
 		
 		//PController while loop
-		while ((Math.abs(b - b0) > ERROR_CORR) || counter < COUNTER_TIME){
+		while ((Math.abs(b - b0) > ERROR_CORR/*/Math.abs(Math.sin(Math.toRadians(currentPosition[2])))*/) || counter < COUNTER_TIME){
+			wallSensor.ping();
+			try{Thread.sleep(100);}catch (InterruptedException e){}
 			distance = wallSensor.getDistance();
 			pCont.processUSData(distance);
 			odo.getPosition(currentPosition, new boolean[] {true, true, true});
@@ -69,12 +71,13 @@ public class ObstacleAvoidance {
 			counter += 1;
 		}
 		
+		Robot.setSpeeds(0, 0);
+		
 		return true;
 	}
 	
-	public boolean avoidLeft()
+	public boolean avoidLeft(UltrasonicSensor wallSensor)
 	{
-		UltrasonicSensor wallSensor = Robot.usSensorRight;
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -90));
 		
 		//Initiate PController
@@ -89,13 +92,20 @@ public class ObstacleAvoidance {
 		int distance;
 		
 		//PController while loop
-		while ((Math.abs(b - b0) > ERROR_CORR) || counter < COUNTER_TIME){
+		while ((Math.abs(b - b0) > ERROR_CORR/*/Math.abs(Math.sin(Math.toRadians(currentPosition[2])))*/) || counter < COUNTER_TIME){
+			wallSensor.ping();
+			try{Thread.sleep(100);}catch (InterruptedException e){}
 			distance = wallSensor.getDistance();
+			Robot.debugSet("Right Dist: " + distance, 0, 5, true);
 			pCont.processUSData(distance);
 			odo.getPosition(currentPosition, new boolean[] {true, true, true});
 			b = currentPosition[1] - slope*currentPosition[0];
 			counter += 1;
 		}
+		
+		Robot.debugSet("HI", 0, 5, true);
+		
+		Robot.setSpeeds(0, 0);
 		
 		return true;
 	}
