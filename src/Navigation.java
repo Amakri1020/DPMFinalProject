@@ -34,6 +34,7 @@ public class Navigation extends Thread {
 	 * Turns the robot by a number of degrees corresponding to the angle
 	 */
 	public void turnTo(double angle) { //TODO needs stopping added
+		isRotating = true;
 		while(angle < 0)
 			angle += 360;
 		
@@ -63,6 +64,7 @@ public class Navigation extends Thread {
 			}
 		}
 		Robot.setSpeeds(0, 0);
+		isRotating = false;
 	}
 	
 	/**
@@ -114,16 +116,18 @@ public class Navigation extends Thread {
 		while(hypotenuse >= COORD_ERROR)
 		{	
 			
-			Robot.usSensor.ping();
-			try{ Thread.sleep(100);} catch (InterruptedException e){}
-			distance = Robot.usSensor.getDistance();
-			
-			if (distance <= WALL_DIST){
-				odo.getPosition(currentPosition, new boolean[]{true, true, true});
-				Robot.setSpeeds(0, 0);
-				Robot.obAvoid.startAvoidance();
-				return;
-				//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
+			if (!(currentPosition[0] > 30 && currentPosition[1] > 270)){
+				Robot.usSensor.ping();
+				try{ Thread.sleep(100);} catch (InterruptedException e){}
+				distance = Robot.usSensor.getDistance();
+				
+				if (distance <= WALL_DIST){
+					odo.getPosition(currentPosition, new boolean[]{true, true, true});
+					Robot.setSpeeds(0, 0);
+					Robot.obAvoid.startAvoidance();
+					return;
+					//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
+				}
 			}
 			
 			odo.getPosition(currentPosition, new boolean [] {true, true, true});
@@ -168,6 +172,17 @@ public class Navigation extends Thread {
 		Robot.setSpeeds(0,0);
 	}
 	
+	
+	public boolean positionValid(double x, double y){
+		boolean flag = true;
+		if (x > 30 && y > 270){
+			flag = false;
+		}
+		if (x < 30 && y < 30){
+			flag = false;
+		}
+		return flag;
+	}
 	
 	//No correction, just turns and moves forward the distance
 	/**

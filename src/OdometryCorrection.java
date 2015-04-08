@@ -33,7 +33,7 @@ public class OdometryCorrection extends Thread {
 			//Get current light reading
 			lightColor = light.getNormalizedLightValue();
 			
-			if (lightColor <= Robot.LIGHT_THRESH){
+			if (lightColor <= Robot.LIGHT_THRESH && Robot.navigator.isRotating == false){
 				//Beep to indicate a grid line has been crossed
 				Sound.beep();
 				
