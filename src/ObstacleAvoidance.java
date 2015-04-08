@@ -5,7 +5,7 @@ import lejos.nxt.UltrasonicSensor;
 public class ObstacleAvoidance {
 
 	public static final int COUNTER_TIME = 50;
-	public static final double ERROR_CORR = 2;
+	public static final double ERROR_CORR = 5;
 	private static double[] currentPosition = new double[3];
 	public static boolean avoiding;
 
@@ -13,10 +13,11 @@ public class ObstacleAvoidance {
 	
 	public ObstacleAvoidance(Odometer odometer){
 		this.odo = odometer;
-		avoiding = true;
+		avoiding = false;
 	}
 	
 	public void startAvoidance(){
+		avoiding = true;
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
 		
 		int rightDistance;
@@ -27,6 +28,7 @@ public class ObstacleAvoidance {
 		rightDistance = Robot.usSensorRight.getDistance();
 		if (rightDistance > 60){
 			avoidRight(Robot.usSensorLeft);
+			avoiding = false;
 			return;
 		}
 		
@@ -35,6 +37,7 @@ public class ObstacleAvoidance {
 		leftDistance = Robot.usSensorLeft.getDistance();
 		if (leftDistance > 60){
 			avoidLeft(Robot.usSensorRight);
+			avoiding = false;
 			return;
 		}
 		
@@ -43,6 +46,8 @@ public class ObstacleAvoidance {
 			avoidLeft(Robot.usSensorRight);
 		else
 			avoidRight(Robot.usSensorLeft);
+		
+		avoiding = false;
 	}
 	
 	public boolean avoidRight(UltrasonicSensor wallSensor)
@@ -63,7 +68,7 @@ public class ObstacleAvoidance {
 		//PController while loop
 		while ((Math.abs(b - b0) > ERROR_CORR/*/Math.abs(Math.sin(Math.toRadians(currentPosition[2])))*/) || counter < COUNTER_TIME){
 			wallSensor.ping();
-			try{Thread.sleep(100);}catch (InterruptedException e){}
+			try{Thread.sleep(75);}catch (InterruptedException e){}
 			distance = wallSensor.getDistance();
 			pCont.processUSData(distance);
 			odo.getPosition(currentPosition, new boolean[] {true, true, true});
@@ -94,7 +99,7 @@ public class ObstacleAvoidance {
 		//PController while loop
 		while ((Math.abs(b - b0) > ERROR_CORR/*/Math.abs(Math.sin(Math.toRadians(currentPosition[2])))*/) || counter < COUNTER_TIME){
 			wallSensor.ping();
-			try{Thread.sleep(100);}catch (InterruptedException e){}
+			try{Thread.sleep(75);}catch (InterruptedException e){}
 			distance = wallSensor.getDistance();
 			Robot.debugSet("Right Dist: " + distance, 0, 5, true);
 			pCont.processUSData(distance);

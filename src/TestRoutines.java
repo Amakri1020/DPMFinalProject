@@ -68,8 +68,11 @@ public class TestRoutines {
 		Launcher launcher = new Launcher();
 		launcher.fire(3);
 	}
+	public static void launchDistanceTest(){
+		Robot.launcher.fire(6);
+	}
 	
-	public static void launchTest(int t1x, int t2x, int t1y, int t2y){
+	public static void launchTest(int t1x, int t1y){
 		Robot.odo.setX(10*Navigation.tile);
 		Robot.odo.setY(10*Navigation.tile);
 		
@@ -78,10 +81,6 @@ public class TestRoutines {
 		Robot.navigator.turnTo(launch[2]);
 		Robot.launcher.fire(3);
 		
-		launch = Launcher.launchPosition(t2x,t2y);
-		Robot.navigator.travelTo(launch[0],launch[1]);
-		Robot.navigator.turnTo(launch[2]);
-		Robot.launcher.fire(3);
 		
 	}
 	

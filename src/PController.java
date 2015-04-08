@@ -2,13 +2,13 @@ import lejos.nxt.*;
 
 public class PController{
 	
-	public final int FILTER_OUT = 10;
+	public final int FILTER_OUT = 5;
 	public final int ANGLE_DIST = 25 ;	
 	public final int FOCUS_WHEEL_DIST = 13;
 	public final int AVOID_SPEED_STRAIGHT = 200;
 	public final int AVOID_SPEED_HIGH = 400;
 	public final int AVOID_SPEED_LOW = 100;
-	public final int BAND_WIDTH = 40;
+	public final int BAND_WIDTH = 20;
 	private NXTRegulatedMotor focusMotor;
 	private int distance;
 	private int filterControl;

@@ -33,9 +33,8 @@ public class OdometryCorrection extends Thread {
 			//Get current light reading
 			lightColor = light.getNormalizedLightValue();
 			
-			if (lightColor <= Robot.LIGHT_THRESH && Robot.navigator.isRotating == false){
+			if (lightColor <= Robot.LIGHT_THRESH && Robot.navigator.isRotating == false && Robot.obAvoid.avoiding == false){
 				//Beep to indicate a grid line has been crossed
-				Sound.beep();
 				
 				//Get position of sensor based on distance from wheel base, heading, and current wheel base
 				//coordinates
@@ -63,7 +62,7 @@ public class OdometryCorrection extends Thread {
 						odo.setPosition(new double[] {0, newY, 0}, new boolean[] {false, true, false});
 						Robot.debugSet("FIRST Y: " + errorY, 0, 5, true);
 					}
-					Button.waitForAnyPress();
+					Sound.beep();
 				}
 			}
 

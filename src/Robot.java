@@ -43,10 +43,11 @@ public class Robot {
 		
 		odo = new Odometer();
 		odo.start();
-		odoCorr = new OdometryCorrection(odo);
-		odoCorr.start();
+		//odoCorr = new OdometryCorrection(odo);
+		//odoCorr.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance(odo);
+		launcher = new Launcher(); 
 		
 		goalArea[0] = Navigation.tile*2;
 		goalArea[1] = Navigation.tile*10;
@@ -55,7 +56,7 @@ public class Robot {
 		lLoc = new LightLocalizer(odo, ls);
 		//process(1,1,1,1,1);
 		
-		
+		//TestRoutines.launchTest(396, 396);
 		
 		navigator.travelTo(goalArea[0], goalArea[1]);
 		
@@ -63,11 +64,11 @@ public class Robot {
 			navigator.travelTo(goalArea[0], goalArea[1]);
 			Robot.setSpeeds(0, 0);
 			try {Thread.sleep(500);} catch (InterruptedException e) {}
-		}
+		} 
 	
 		Button.waitForAnyPress();
 
-		process(1,1,1,1,1);
+		//process(1,1,1,1,1);
 	}
 	
 	
