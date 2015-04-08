@@ -7,6 +7,7 @@ public class Navigation extends Thread {
 	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 2;
+	private static final double WALL_DIST = 20;
 	public boolean isNavigating;
 	public boolean isRotating;
 	public int distance = 0;
@@ -117,7 +118,7 @@ public class Navigation extends Thread {
 			try{ Thread.sleep(100);} catch (InterruptedException e){}
 			distance = Robot.usSensor.getDistance();
 			
-			if (distance <= 20){
+			if (distance <= WALL_DIST){
 				odo.getPosition(currentPosition, new boolean[]{true, true, true});
 				Robot.setSpeeds(0, 0);
 				Robot.obAvoid.startAvoidance();

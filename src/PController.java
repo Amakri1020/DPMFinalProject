@@ -1,13 +1,12 @@
-import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.*;
 
 public class PController{
 	
 	public final int FILTER_OUT = 20;
 	public final int ANGLE_DIST = 35;	
-	public final int AVOID_SPEED_STRAIGHT = 300;
-	public final int AVOID_SPEED_HIGH = 600;
-	public final int AVOID_SPEED_LOW = 150;
+	public final int AVOID_SPEED_STRAIGHT = 200;
+	public final int AVOID_SPEED_HIGH = 400;
+	public final int AVOID_SPEED_LOW = 100;
 	private NXTRegulatedMotor focusMotor;
 	private int distance;
 	private int filterControl;
@@ -15,15 +14,18 @@ public class PController{
 	public PController(int bandCenter, int bandwith, NXTRegulatedMotor focus) {
 		//Default Constructor
 		Robot.setSpeeds(0, 0);
+		
+		try {Thread.sleep(100);}catch (InterruptedException e) {}
+		
 		focusMotor = focus;
 		
 		Robot.LEFT_WHEEL.setAcceleration(300);
 		Robot.RIGHT_WHEEL.setAcceleration(300);
 		
-		Robot.LEFT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
 		Robot.RIGHT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
-		Robot.LEFT_WHEEL.forward();
+		Robot.LEFT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
 		Robot.RIGHT_WHEEL.forward();
+		Robot.LEFT_WHEEL.forward();
 		filterControl = 0;
 	}
 	
