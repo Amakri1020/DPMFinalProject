@@ -3,7 +3,7 @@
 
 public class Navigation extends Thread {
 	
-	private static double ANGLE_ERROR = 10;
+	private static double ANGLE_ERROR = 3;
 	private static double TURNING_ANGLE_ERROR = 1;
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 2;

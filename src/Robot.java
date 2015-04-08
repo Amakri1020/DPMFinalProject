@@ -93,7 +93,7 @@ public class Robot {
 
 
 	/**
-	 * Contains behaviour functionality for robot
+	 * Contains behaviour functionality for final routine
 	 */
 	public static void process(int map, int t1x, int t1y, int t2x, int t2y){
 		int count = 72;
@@ -110,14 +110,6 @@ public class Robot {
 		//navigator.travelTo(0,0);
 		//navigator.turnTo(0);
 		
-		if(map == 1){
-			navigateMapOne();
-		} else if(map == 2){
-			navigateMapTwo();
-		} else if(map == 3){
-			navigateMapThree();
-		}
-		
 		navigator.travelTo(11*Navigation.tile, 11*Navigation.tile);
 		
 		dists = usLoc.sweepFull(count);
@@ -132,18 +124,16 @@ public class Robot {
 		odo.setX(10*Navigation.tile - odo.getX());
 		odo.setY(10*Navigation.tile - odo.getY());
 		
-		//navigator.travelTo(t1x*Navigation.tile - LAUNCH_OFFSET,t1y*Navigation.tile - LAUNCH_OFFSET);
-		//launcher.fire(3);
-		//navigator.travelTo(t2x*Navigation.tile - LAUNCH_OFFSET,t2y*Navigation.tile - LAUNCH_OFFSET);
-		//launcher.fire(3);
+		int[] launch = Launcher.launchPosition(t1x,t1y);
+		navigator.travelTo(launch[0],launch[1]);
+		navigator.turnTo(launch[2]);
+		launcher.fire(3);
 		
-		if(map == 1){
-			navigateBackMapOne();
-		} else if(map == 2){
-			navigateBackMapTwo();
-		} else if(map == 3){
-			navigateBackMapThree();
-		}
+		launch = Launcher.launchPosition(t2x,t2y);
+		navigator.travelTo(launch[0],launch[1]);
+		navigator.turnTo(launch[2]);
+		launcher.fire(3);
+		
 		
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
@@ -156,50 +146,9 @@ public class Robot {
 
 	}
 	
-	private static void navigateBackMapThree() {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 
-
-	private static void navigateBackMapTwo() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	private static void navigateBackMapOne() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	private static void navigateMapThree() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	private static void navigateMapTwo() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-	private static void navigateMapOne() {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 
