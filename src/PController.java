@@ -2,11 +2,13 @@ import lejos.nxt.*;
 
 public class PController{
 	
-	public final int FILTER_OUT = 20;
-	public final int ANGLE_DIST = 35;	
+	public final int FILTER_OUT = 10;
+	public final int ANGLE_DIST = 25 ;	
+	public final int FOCUS_WHEEL_DIST = 13;
 	public final int AVOID_SPEED_STRAIGHT = 200;
 	public final int AVOID_SPEED_HIGH = 400;
 	public final int AVOID_SPEED_LOW = 100;
+	public final int BAND_WIDTH = 40;
 	private NXTRegulatedMotor focusMotor;
 	private int distance;
 	private int filterControl;
@@ -17,10 +19,9 @@ public class PController{
 		
 		try {Thread.sleep(100);}catch (InterruptedException e) {}
 		
-		focusMotor = focus;
+		this.distance = 255;
 		
-		Robot.LEFT_WHEEL.setAcceleration(300);
-		Robot.RIGHT_WHEEL.setAcceleration(300);
+		focusMotor = focus;
 		
 		Robot.RIGHT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
 		Robot.LEFT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
@@ -34,7 +35,7 @@ public class PController{
 		// rudimentary filter
 		if (distance >= 50 && filterControl < FILTER_OUT) {
 			// bad value, do not set the distance var, however do increment the filter value
-			filterControl ++;
+			filterControl++;
 		} else if (distance >= 50){
 			// true > 60, therefore set distance to > 60
 			this.distance = distance;
@@ -50,7 +51,7 @@ public class PController{
 		}
 
 		int angleDistance = ANGLE_DIST;
-		int wheelLowDistance = 25; //Distance from the wall at which the focus wheel speed is 100
+		int wheelLowDistance = FOCUS_WHEEL_DIST; //Distance from the wall at which the focus wheel speed is AVOID_SPEED_STRAIGHT
 		if( angleDistance * Math.cos(Math.PI/4) < wheelLowDistance ){
 			angleDistance = (int)((wheelLowDistance + 1.0)/(Math.cos(Math.PI/4)));
 		}
@@ -61,6 +62,10 @@ public class PController{
 		
 		//y = ax + b
 		double focusMotorSpeed = focusMotorSpeedSlope*(double)(this.distance)*Math.cos(Math.PI/4) + yInt;
+		
+		if (Math.abs(focusMotorSpeed - AVOID_SPEED_STRAIGHT) < BAND_WIDTH)
+			focusMotorSpeed = AVOID_SPEED_STRAIGHT;
+			
 		
 		//Upper Limit on the turning of the focus wheel
 		if (focusMotorSpeed > (AVOID_SPEED_HIGH)){

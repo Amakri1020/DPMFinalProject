@@ -3,7 +3,7 @@ import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
-	public static double[] goalArea = {30, 150};
+	public static double[] goalArea = {60, 300};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
 	public static final double WHEEL_BASE = 11.4;
@@ -21,8 +21,8 @@ public class Robot {
 	public static final NXTRegulatedMotor LAUNCHER = Motor.C;
 	
 	public static final UltrasonicSensor usSensor = new UltrasonicSensor(SensorPort.S1);
-	public static final UltrasonicSensor usSensorLeft = new UltrasonicSensor(SensorPort.S3);
-	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S2);
+	public static final UltrasonicSensor usSensorRight = new UltrasonicSensor(SensorPort.S3);
+	public static final UltrasonicSensor usSensorLeft = new UltrasonicSensor(SensorPort.S2);
 	public static final ColorSensor ls = new ColorSensor(SensorPort.S4);
 	
 	public static Odometer odo;
@@ -43,49 +43,30 @@ public class Robot {
 		
 		odo = new Odometer();
 		odo.start();
-		//odoCorr = new OdometryCorrection(odo);
-		//odoCorr.start();
+		odoCorr = new OdometryCorrection(odo);
+		odoCorr.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance(odo);
 		
+		goalArea[0] = Navigation.tile*2;
+		goalArea[1] = Navigation.tile*10;
+		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
-		process(1,1,1,1,1);
+		//process(1,1,1,1,1);
 		
-		/*navigator.travelTo(goalArea[0], goalArea[1]);
+		
+		
+		navigator.travelTo(goalArea[0], goalArea[1]);
 		
 		while (odo.getX() < goalArea[0] - 5 && odo.getY() < goalArea[1] - 5){
 			navigator.travelTo(goalArea[0], goalArea[1]);
+			Robot.setSpeeds(0, 0);
+			try {Thread.sleep(500);} catch (InterruptedException e) {}
 		}
 	
 		Button.waitForAnyPress();
-//		usLoc.doLocalization();
-		
-//		RConsole.open();
-		int count = 72;
-		int arc = 360/count;
-		
-		int[] dists = usLoc.sweepFull(count);
-		int[] yx = usLoc.findLocalMinima(dists);
-  		odo.setY(dists[yx[0]] + US_OFFSET-30);
-		odo.setX(dists[yx[1]] + US_OFFSET-30);
-		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
-		navigator.travelTo(4, 4);
-		navigator.turnTo(60);
-		odo.setY(0);
-		odo.setX(0);
-		odo.setTheta(0);
-		lLoc.doLocalization();
-		navigator.travelTo(0,0);
-		navigator.turnTo(0);
-		
-//		for (int i = 0; i < 72; i++){
-//			RConsole.println(i+": "+ dists[i] + ", ");
-//		}
-//		RConsole.println("setting y from " + odo.getY() + "to "+ dists[yx[0]]);
-//		RConsole.println("setting x from " + odo.getX() + "to "+ dists[yx[1]]);
-//		RConsole.println("setting theta from " + odo.getTheta() + "to "+ ((yx[1]*arc - 90)));
-		*/
+
 		process(1,1,1,1,1);
 	}
 	
