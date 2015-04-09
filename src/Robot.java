@@ -43,8 +43,8 @@ public class Robot {
 		
 		odo = new Odometer();
 		odo.start();
-		//odoCorr = new OdometryCorrection(odo);
-		//odoCorr.start();
+		odoCorr = new OdometryCorrection(odo);
+		odoCorr.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance(odo);
 		launcher = new Launcher(); 
