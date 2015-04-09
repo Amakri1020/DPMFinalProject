@@ -54,21 +54,7 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
-		//process(1,1,1,1,1);
-		
-		//TestRoutines.launchTest(396, 396);
-		
-		navigator.travelTo(goalArea[0], goalArea[1]);
-		
-		while (odo.getX() < goalArea[0] - 5 && odo.getY() < goalArea[1] - 5){
-			navigator.travelTo(goalArea[0], goalArea[1]);
-			Robot.setSpeeds(0, 0);
-			try {Thread.sleep(500);} catch (InterruptedException e) {}
-		} 
-	
-		Button.waitForAnyPress();
-
-		//process(1,1,1,1,1);
+		process(1,1,1,1,1);
 	}
 	
 	
@@ -124,13 +110,6 @@ public class Robot {
 		navigator.turnTo(60);
 		lLoc.doLocalization();
 	}
-	
-
-
-
-
-
-
 
 	/**
 	 * @param info

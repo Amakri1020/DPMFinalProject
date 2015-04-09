@@ -115,8 +115,7 @@ public class Navigation extends Thread {
 	    //Continue while robot is not at desired position
 		while(hypotenuse >= COORD_ERROR)
 		{	
-			
-			if (!(currentPosition[0] > 30 && currentPosition[1] > 270)){
+			if (positionValid(currentPosition[0], currentPosition[1])){
 				Robot.usSensor.ping();
 				try{ Thread.sleep(100);} catch (InterruptedException e){}
 				distance = Robot.usSensor.getDistance();
@@ -125,7 +124,7 @@ public class Navigation extends Thread {
 					odo.getPosition(currentPosition, new boolean[]{true, true, true});
 					Robot.setSpeeds(0, 0);
 					Robot.obAvoid.startAvoidance();
-					return;
+					continue;
 					//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
 				}
 			}
@@ -259,7 +258,7 @@ public class Navigation extends Thread {
 	
 	public boolean positionValid(double x, double y){
 		boolean flag = true;
-		if (x > 30 && y > 270){
+		if (x > 270 && y > 270){
 			flag = false;
 		}
 		if (x < 30 && y < 30){
