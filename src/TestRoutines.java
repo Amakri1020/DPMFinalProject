@@ -69,7 +69,10 @@ public class TestRoutines {
 		launcher.fire(3);
 	}
 	public static void launchDistanceTest(){
-		Robot.launcher.fire(6);
+		for (int i = 0; i <6; i++){
+			Robot.launcher.fire(1);
+			Button.waitForAnyPress();
+		}
 	}
 	
 	public static void launchTest(int t1x, int t1y){
@@ -80,8 +83,32 @@ public class TestRoutines {
 		Robot.navigator.travelTo(launch[0],launch[1]);
 		Robot.navigator.turnTo(launch[2]);
 		Robot.launcher.fire(3);
-		
-		
 	}
 	
+	public static void mapOneBottom(){
+		Robot.navigator.travelToBlind(3*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(4*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(6*Navigation.tile, 1.5*Navigation.tile);
+		Robot.navigator.travelToBlind(7.5*Navigation.tile, 1.5*Navigation.tile);
+		Robot.navigator.travelToBlind(7.5*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(9*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(10.5*Navigation.tile, 1*Navigation.tile);
+		Robot.navigator.travelToBlind(10.5*Navigation.tile, 2.5*Navigation.tile);
+	}
+	public static void mapTwoBottom(){
+		Robot.navigator.travelToBlind(4*Navigation.tile, 2.5*Navigation.tile);
+		Robot.navigator.travelToBlind(5*Navigation.tile, 2.5*Navigation.tile);
+		Robot.navigator.travelToBlind(7*Navigation.tile, 1.5*Navigation.tile);
+		Robot.navigator.travelToBlind(9*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(10.5*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(10.5*Navigation.tile, 2.5*Navigation.tile);
+	}
+	public static void mapThreeBottom(){
+		Robot.navigator.travelToBlind(3*Navigation.tile, 1.5*Navigation.tile);
+		Robot.navigator.travelToBlind(4*Navigation.tile, 1.5*Navigation.tile);
+		Robot.navigator.travelToBlind(6*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(7*Navigation.tile, -.5*Navigation.tile);
+		Robot.navigator.travelToBlind(10*Navigation.tile, 2.5*Navigation.tile);
+		Robot.navigator.travelToBlind(10.5*Navigation.tile, 2.5*Navigation.tile);
+	}
 }
