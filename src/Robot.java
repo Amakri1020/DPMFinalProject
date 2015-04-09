@@ -49,7 +49,7 @@ public class Robot {
 		obAvoid = new ObstacleAvoidance(odo);
 		launcher = new Launcher(); 
 		
-		goalArea[0] = Navigation.tile*2;
+		goalArea[0] = Navigation.tile*10;
 		goalArea[1] = Navigation.tile*10;
 		
 		usLoc = new USLocalizer(odo, usSensor);
@@ -89,8 +89,6 @@ public class Robot {
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
 		lLoc.doLocalization();
-		//navigator.travelTo(0,0);
-		//navigator.turnTo(0);
 		
 		navigator.travelTo(11*Navigation.tile, 11*Navigation.tile);
 		
@@ -125,7 +123,6 @@ public class Robot {
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
 		lLoc.doLocalization();
-
 	}
 	
 
