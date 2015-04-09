@@ -3,7 +3,7 @@ import lejos.nxt.comm.RConsole;
 
 public class Robot {
 
-	public static double[] goalArea = {60, 300};
+	public static double[] goalArea = {300, 300};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
 	public static final double WHEEL_BASE = 11.4;
@@ -100,6 +100,7 @@ public class Robot {
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
+		navigator.travelTo(0, 0);
 		
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
@@ -109,6 +110,9 @@ public class Robot {
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
 		lLoc.doLocalization();
+		
+		navigator.travelTo(0, 0);
+		navigator.turnTo(0);
 	}
 
 	/**
