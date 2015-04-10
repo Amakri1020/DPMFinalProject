@@ -17,6 +17,7 @@ public class Navigation extends Thread {
 	public static double targetX = 274.32;
 	public static double targetY = 274.32;
 	public static double targetTheta = Math.sqrt( Math.pow(targetX, 2) + Math.pow(targetY, 2) );
+	public boolean launching = false;
 	
 	private Odometer odo;
 	
@@ -126,7 +127,7 @@ public class Navigation extends Thread {
 					Robot.setSpeeds(0, 0);
 					Robot.obAvoid.startAvoidance();
 					continue;
-				} else {
+				} else if (launching == false) {
 					Robot.usSensorRight.ping();
 					try{ Thread.sleep(100);} catch (InterruptedException e){}
 					int rightDistance = Robot.usSensorRight.getDistance();

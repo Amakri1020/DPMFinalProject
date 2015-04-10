@@ -101,6 +101,8 @@ public class Robot {
 		navigator.travelTo(goalArea[0], goalArea[1]);
 		//odoCorr.correct = false;
 		
+		navigator.launching = true;
+		
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
@@ -129,9 +131,13 @@ public class Robot {
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
+		navigator.launching = false;
+		
 		//odoCorr.correct = true;
 		navigator.travelTo(0, 0);
 		//odoCorr.correct = false;
+		
+		navigator.launching = true;
 		
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
