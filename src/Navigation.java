@@ -136,10 +136,10 @@ public class Navigation extends Thread {
 					int leftDistance = Robot.usSensorLeft.getDistance();
 					
 					if (leftDistance < rightDistance){
-						Robot.obAvoid.avoidRight(Robot.usSensorLeft, 90);
+						Robot.obAvoid.avoidRightToWall(Robot.usSensorLeft, 90);
 						return;
 					} else {
-						Robot.obAvoid.avoidLeft(Robot.usSensorRight, 90);
+						Robot.obAvoid.avoidLeftToWall(Robot.usSensorRight, 90);
 						return;
 					}
 				}

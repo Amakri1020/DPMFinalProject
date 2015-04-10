@@ -99,6 +99,9 @@ public class ObstacleAvoidance {
 			Robot.usSensor.ping();
 			try{Thread.sleep(75);}catch (InterruptedException e){}
 			distance = Robot.usSensor.getDistance();
+			if(distance <= 25){
+				break;
+			}
 		}
 		
 		Robot.setSpeeds(0, 0);
@@ -158,6 +161,9 @@ public class ObstacleAvoidance {
 			Robot.usSensor.ping();
 			try{Thread.sleep(75);}catch (InterruptedException e){}
 			distance = Robot.usSensor.getDistance();
+			if(distance <= 25){
+				break;
+			}
 		}
 		
 		Robot.setSpeeds(0, 0);
