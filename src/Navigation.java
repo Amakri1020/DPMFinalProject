@@ -127,6 +127,14 @@ public class Navigation extends Thread {
 					continue;
 					//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
 				}
+				
+				Robot.usSensorRight.ping();
+				try{ Thread.sleep(100);} catch (InterruptedException e){}
+				distance = Robot.usSensorRight.getDistance();
+				
+				Robot.usSensorLeft.ping();
+				try{ Thread.sleep(100);} catch (InterruptedException e){}
+				distance = Robot.usSensorLeft.getDistance();
 			}
 			
 			odo.getPosition(currentPosition, new boolean [] {true, true, true});

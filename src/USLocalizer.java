@@ -43,12 +43,12 @@ public class USLocalizer {
 		Robot.setSpeeds(0, Robot.TURN_SPEED);
 		while ((getFilteredData() < clipDistance));
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(750);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		odo.setTheta(0);
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true}); 
 		Sound.beep();
 
 		
@@ -57,7 +57,6 @@ public class USLocalizer {
 		double start, target;
 		start = odo.getTheta();
 		Robot.setSpeeds(0,Robot.TURN_SPEED);
-		//rotate until he doesnt see a wall
 				
 		for (int i = 0; i < count; i++){
 			target = start + (i*arc);
@@ -134,6 +133,7 @@ public class USLocalizer {
 		}
 		*/
 		result[1] = result[0] + 18;
+		Robot.debugSet("Dists: " + dists[result[0]] + "; " + dists[result[1]], 0, 6, true);
 
 		/*RConsole.println("second indices: " + result[1] + ", " + secondUp);
 		result[1] = ((result[1] + secondUp)/2);

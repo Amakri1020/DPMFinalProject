@@ -3,7 +3,7 @@ import lejos.nxt.Sound;
 import lejos.nxt.LCD;
 
 public class LightLocalizer {
-	private final int ANGLE_OFFSET = 3;	//chosen based on experimental observations
+	private final int ANGLE_OFFSET = 13;	//chosen based on experimental observations
 	
 	private Odometer odo;
 	private ColorSensor ls;
@@ -38,6 +38,8 @@ public class LightLocalizer {
 				
 				//if line gets crossed, store angle, increment i
 				if(onLine){
+					Sound.beep();
+
 					//for the first 3 lines, the robot sleeps after detection to prevent re-reads. The sleep is short enough not to affect reading close lines
 					if (i < 3) {
 
@@ -49,7 +51,6 @@ public class LightLocalizer {
 					}
 					
 					angles[i] = odo.getTheta();
-					Sound.beep();
 					i++;
 					onLine=false;
 					continue;
@@ -57,7 +58,7 @@ public class LightLocalizer {
 			
 		}
 		
-		//LCD.drawString(""+(int)angles[0]+" "+(int)angles[1]+" "+(int)angles[2]+" "+(int)angles[3], 0, 4);
+		Robot.debugSet(""+(int)angles[0]+" "+(int)angles[1]+" "+(int)angles[2]+" "+(int)angles[3], 0, 5, true);
 		//the angle from the US is assumed to be reasonably correct, and only position is corrected.
 		double dX = Math.toRadians(angles[0]-angles[2]);
 		double dY = Math.toRadians(angles[1]-angles[3]);

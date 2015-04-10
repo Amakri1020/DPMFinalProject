@@ -7,7 +7,7 @@ public class Launcher {
 		Robot.LAUNCHER.rotate(-shotCount * 360);
 	}
 	
-	public static int[] launchPosition(int x, int y) {
+	public static int[] launchPosition(double x, double y) {
 		int[] result = new int[3];
 		int shot_length = 153;
 		

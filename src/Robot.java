@@ -11,7 +11,7 @@ public class Robot {
 	public static final double WHEEL_RADIUS = 2.12;
 	public static final double LSENSOR_DIST = 13.5;
 	public static final double FWD_SPEED = 300;
-	public static final double TURN_SPEED = 40;
+	public static final double TURN_SPEED = 80;
 	public static final double LIGHT_THRESH = 440;
 	
 	public static final double ANGLE_CORRECTION = 1.013;
@@ -54,7 +54,9 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
-		process(1,1,1,1,1);
+		
+		process(1,13*Navigation.tile,13*Navigation.tile,14*Navigation.tile,14*Navigation.tile);
+		//lLoc.doLocalization();
 	}
 	
 	
@@ -63,7 +65,7 @@ public class Robot {
 	/**
 	 * Contains behaviour functionality for final routine
 	 */
-	public static void process(int map, int t1x, int t1y, int t2x, int t2y){
+	public static void process(int map, double t1x, double t1y, double t2x, double t2y){
 		int count = 72;
 		int arc = 360/count;
 		
@@ -74,10 +76,16 @@ public class Robot {
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
-		navigator.travelTo(11*Navigation.tile, 11*Navigation.tile);
+		Button.waitForAnyPress();
 		
+		odoCorr.correct = true;
+		navigator.travelTo(goalArea[0], goalArea[1]);
+		odoCorr.correct = false;
+		
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
   		odo.setY(dists[yx[0]] + US_OFFSET-30);
@@ -85,7 +93,9 @@ public class Robot {
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
+		
 		odo.setTheta(odo.getTheta() + 180);
 		odo.setX(10*Navigation.tile - odo.getX());
 		odo.setY(10*Navigation.tile - odo.getY());
@@ -100,8 +110,11 @@ public class Robot {
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
+		odoCorr.correct = true;
 		navigator.travelTo(0, 0);
+		odoCorr.correct = false;
 		
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
   		odo.setY(dists[yx[0]] + US_OFFSET-30);
@@ -109,6 +122,7 @@ public class Robot {
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
+		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
 		navigator.travelTo(0, 0);
