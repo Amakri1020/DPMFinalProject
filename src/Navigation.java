@@ -8,6 +8,7 @@ public class Navigation extends Thread {
 	private static long TURN_TIME = 20;
 	private static final double COORD_ERROR = 2;
 	private static final double WALL_DIST = 20;
+	private static final double SIDE_DIST = 10;
 	public boolean isNavigating;
 	public boolean isRotating;
 	public int distance = 0;
@@ -125,16 +126,23 @@ public class Navigation extends Thread {
 					Robot.setSpeeds(0, 0);
 					Robot.obAvoid.startAvoidance();
 					continue;
-					//Robot.debugSet("BACK TO NAVIGATION", 0, 5, true);
 				}
 				
 				Robot.usSensorRight.ping();
 				try{ Thread.sleep(100);} catch (InterruptedException e){}
 				distance = Robot.usSensorRight.getDistance();
 				
+				if (distance <= SIDE_DIST){
+					Robot.obAvoid.avoidLeft(Robot.usSensorRight, 30);
+				}
+				
 				Robot.usSensorLeft.ping();
 				try{ Thread.sleep(100);} catch (InterruptedException e){}
 				distance = Robot.usSensorLeft.getDistance();
+				
+				if (distance <= SIDE_DIST){
+					Robot.obAvoid.avoidRight(Robot.usSensorLeft, 30);
+				}
 			}
 			
 			odo.getPosition(currentPosition, new boolean [] {true, true, true});

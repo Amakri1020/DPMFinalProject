@@ -27,7 +27,7 @@ public class ObstacleAvoidance {
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		rightDistance = Robot.usSensorRight.getDistance();
 		if (rightDistance > 60){
-			avoidRight(Robot.usSensorLeft);
+			avoidRight(Robot.usSensorLeft, 90);
 			avoiding = false;
 			return;
 		}
@@ -36,23 +36,23 @@ public class ObstacleAvoidance {
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		leftDistance = Robot.usSensorLeft.getDistance();
 		if (leftDistance > 60){
-			avoidLeft(Robot.usSensorRight);
+			avoidLeft(Robot.usSensorRight, 90);
 			avoiding = false;
 			return;
 		}
 		
 		odo.getPosition(currentPosition, new boolean[]{true, true, true});
 		if (currentPosition[0] > currentPosition[1])
-			avoidLeft(Robot.usSensorRight);
+			avoidLeft(Robot.usSensorRight, 90);
 		else
-			avoidRight(Robot.usSensorLeft);
+			avoidRight(Robot.usSensorLeft, 90);
 		
 		avoiding = false;
 	}
 	
-	public boolean avoidRight(UltrasonicSensor wallSensor)
+	public boolean avoidRight(UltrasonicSensor wallSensor, double turn)
 	{
-		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), 90));
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),turn));
 		
 		//Initiate PController
 		PController pCont = new PController(20, 3, Robot.RIGHT_WHEEL);
@@ -81,9 +81,9 @@ public class ObstacleAvoidance {
 		return true;
 	}
 	
-	public boolean avoidLeft(UltrasonicSensor wallSensor)
+	public boolean avoidLeft(UltrasonicSensor wallSensor, double turn)
 	{
-		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -90));
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -turn));
 		
 		//Initiate PController
 		PController pCont = new PController(20, 3, Robot.LEFT_WHEEL);
