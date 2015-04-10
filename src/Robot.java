@@ -6,12 +6,12 @@ public class Robot {
 	public static double[] goalArea = {300, 300};
 	public static final double[] FIELD_SIZE = {240, 240};
 	
-	public static final double WHEEL_BASE = 11.4;
+	public static final double WHEEL_BASE = 11.8;
 	public static final double US_OFFSET = 6.0;
 	public static final double WHEEL_RADIUS = 2.12;
 	public static final double LSENSOR_DIST = 13.5;
 	public static final double FWD_SPEED = 300;
-	public static final double TURN_SPEED = 80;
+	public static double TURN_SPEED = 80;
 	public static final double LIGHT_THRESH = 440;
 	
 	public static final double ANGLE_CORRECTION = 1.013;
@@ -54,10 +54,24 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
-		
-		process(1,13*Navigation.tile,13*Navigation.tile,14*Navigation.tile,14*Navigation.tile);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//TestRoutines.mapOneBottom();
+		process(1,13*Navigation.tile,13*Navigation.tile,7*Navigation.tile,14*Navigation.tile);
 		//lLoc.doLocalization();
-	}
+		/*navigator.turnTo(0);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		TestRoutines.turnTest();
+	*/}
 	
 	
 
@@ -79,11 +93,13 @@ public class Robot {
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
-		Button.waitForAnyPress();
+		//Button.waitForAnyPress();
 		
-		odoCorr.correct = true;
+		//odoCorr.correct = true;
+		navigator.travelTo(Navigation.tile*2, Navigation.tile*2);
+		navigator.travelTo(Navigation.tile*3.5, Navigation.tile*2.5);
 		navigator.travelTo(goalArea[0], goalArea[1]);
-		odoCorr.correct = false;
+		//odoCorr.correct = false;
 		
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
@@ -96,7 +112,7 @@ public class Robot {
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
-		odo.setTheta(odo.getTheta() + 180);
+		odo.setTheta(Math.toRadians(ObstacleAvoidance.safeAddToAngle(odo.getTheta(), 180)));
 		odo.setX(10*Navigation.tile - odo.getX());
 		odo.setY(10*Navigation.tile - odo.getY());
 		
@@ -110,9 +126,9 @@ public class Robot {
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
-		odoCorr.correct = true;
+		//odoCorr.correct = true;
 		navigator.travelTo(0, 0);
-		odoCorr.correct = false;
+		//odoCorr.correct = false;
 		
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);

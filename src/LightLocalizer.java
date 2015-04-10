@@ -3,7 +3,7 @@ import lejos.nxt.Sound;
 import lejos.nxt.LCD;
 
 public class LightLocalizer {
-	private final int ANGLE_OFFSET = 13;	//chosen based on experimental observations
+	private final int ANGLE_OFFSET = 8;	//chosen based on experimental observations
 	
 	private Odometer odo;
 	private ColorSensor ls;
@@ -17,6 +17,7 @@ public class LightLocalizer {
 	
 	public void doLocalization() {
 		//begin rotating
+		Robot.TURN_SPEED = 40;
 		Robot.setSpeeds(0,Robot.TURN_SPEED);
 		
 		int currentLightVal = 0;
@@ -55,8 +56,10 @@ public class LightLocalizer {
 					onLine=false;
 					continue;
 				}
+				
 			
 		}
+		Robot.TURN_SPEED = 80;
 		
 		Robot.debugSet(""+(int)angles[0]+" "+(int)angles[1]+" "+(int)angles[2]+" "+(int)angles[3], 0, 5, true);
 		//the angle from the US is assumed to be reasonably correct, and only position is corrected.

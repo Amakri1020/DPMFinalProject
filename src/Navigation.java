@@ -116,33 +116,49 @@ public class Navigation extends Thread {
 	    //Continue while robot is not at desired position
 		while(hypotenuse >= COORD_ERROR)
 		{	
-			if (positionValid(currentPosition[0], currentPosition[1])){
-				Robot.usSensor.ping();
-				try{ Thread.sleep(100);} catch (InterruptedException e){}
-				distance = Robot.usSensor.getDistance();
-				
-				if (distance <= WALL_DIST){
+			Robot.usSensor.ping();
+			try{ Thread.sleep(100);} catch (InterruptedException e){}
+			distance = Robot.usSensor.getDistance();
+			
+			if (distance <= WALL_DIST){
+				if (positionValid(currentPosition[0], currentPosition[1])){
 					odo.getPosition(currentPosition, new boolean[]{true, true, true});
 					Robot.setSpeeds(0, 0);
 					Robot.obAvoid.startAvoidance();
 					continue;
+				} else {
+					Robot.usSensorRight.ping();
+					try{ Thread.sleep(100);} catch (InterruptedException e){}
+					int rightDistance = Robot.usSensorRight.getDistance();
+
+					Robot.usSensorLeft.ping();
+					try{ Thread.sleep(100);} catch (InterruptedException e){}
+					int leftDistance = Robot.usSensorLeft.getDistance();
+					
+					if (leftDistance < rightDistance){
+						Robot.obAvoid.avoidRight(Robot.usSensorLeft, 90);
+						return;
+					} else {
+						Robot.obAvoid.avoidLeft(Robot.usSensorRight, 90);
+						return;
+					}
 				}
-				
-				Robot.usSensorRight.ping();
-				try{ Thread.sleep(100);} catch (InterruptedException e){}
-				distance = Robot.usSensorRight.getDistance();
-				
-				if (distance <= SIDE_DIST){
-					Robot.obAvoid.avoidLeft(Robot.usSensorRight, 30);
-				}
-				
-				Robot.usSensorLeft.ping();
-				try{ Thread.sleep(100);} catch (InterruptedException e){}
-				distance = Robot.usSensorLeft.getDistance();
-				
-				if (distance <= SIDE_DIST){
-					Robot.obAvoid.avoidRight(Robot.usSensorLeft, 30);
-				}
+			}
+			
+			Robot.usSensorRight.ping();
+			try{ Thread.sleep(100);} catch (InterruptedException e){}
+			distance = Robot.usSensorRight.getDistance();
+			
+			if (distance <= SIDE_DIST){
+				Robot.obAvoid.avoidLeft(Robot.usSensorRight, 30);
+			}
+			
+			Robot.usSensorLeft.ping();
+			try{ Thread.sleep(100);} catch (InterruptedException e){}
+			distance = Robot.usSensorLeft.getDistance();
+			
+			if (distance <= SIDE_DIST){
+				Robot.obAvoid.avoidRight(Robot.usSensorLeft, 30);
 			}
 			
 			odo.getPosition(currentPosition, new boolean [] {true, true, true});
@@ -274,10 +290,10 @@ public class Navigation extends Thread {
 	
 	public boolean positionValid(double x, double y){
 		boolean flag = true;
-		if (x > 270 && y > 270){
+		if (x > 7*Navigation.tile && y > 7*Navigation.tile){
 			flag = false;
 		}
-		if (x < 30 && y < 30){
+		if (x < 2*Navigation.tile && y < 2*Navigation.tile){
 			flag = false;
 		}
 		return flag;

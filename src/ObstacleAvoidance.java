@@ -81,6 +81,31 @@ public class ObstacleAvoidance {
 		return true;
 	}
 	
+	public boolean avoidRightToWall(UltrasonicSensor wallSensor, double turn)
+	{
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),turn));
+		
+		//Initiate PController
+		PController pCont = new PController(20, 3, Robot.RIGHT_WHEEL);
+		int distance = 40;
+		
+		//PController while loop
+		while (distance >= 25){
+			wallSensor.ping();
+			try{Thread.sleep(75);}catch (InterruptedException e){}
+			distance = wallSensor.getDistance();
+			pCont.processUSData(distance);
+			odo.getPosition(currentPosition, new boolean[] {true, true, true});
+			Robot.usSensor.ping();
+			try{Thread.sleep(75);}catch (InterruptedException e){}
+			distance = Robot.usSensor.getDistance();
+		}
+		
+		Robot.setSpeeds(0, 0);
+		
+		return true;
+	}
+	
 	public boolean avoidLeft(UltrasonicSensor wallSensor, double turn)
 	{
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -turn));
@@ -108,7 +133,32 @@ public class ObstacleAvoidance {
 			counter += 1;
 		}
 		
-		Robot.debugSet("HI", 0, 5, true);
+		Robot.setSpeeds(0, 0);
+		
+		return true;
+	}
+	
+
+	public boolean avoidLeftToWall(UltrasonicSensor wallSensor, double turn)
+	{
+		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),-turn));
+		
+		//Initiate PController
+		PController pCont = new PController(20, 3, Robot.RIGHT_WHEEL);
+		int counter = 0;
+		int distance = 40;
+		
+		//PController while loop
+		while (distance >= 25){
+			wallSensor.ping();
+			try{Thread.sleep(75);}catch (InterruptedException e){}
+			distance = wallSensor.getDistance();
+			pCont.processUSData(distance);
+			odo.getPosition(currentPosition, new boolean[] {true, true, true});
+			Robot.usSensor.ping();
+			try{Thread.sleep(75);}catch (InterruptedException e){}
+			distance = Robot.usSensor.getDistance();
+		}
 		
 		Robot.setSpeeds(0, 0);
 		
@@ -124,5 +174,4 @@ public class ObstacleAvoidance {
 			angle -= 360;
 		return angle;
 	}
-	
 }

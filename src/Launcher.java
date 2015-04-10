@@ -9,10 +9,10 @@ public class Launcher {
 	
 	public static int[] launchPosition(double x, double y) {
 		int[] result = new int[3];
-		int shot_length = 153;
+		double shot_length = 5*Navigation.tile + 18;
 		
-		double xprime = x - 10*Navigation.tile;
-		double yprime = y - 10*Navigation.tile;
+		double xprime = x - 9.5*Navigation.tile;
+		double yprime = y - 9.5*Navigation.tile;
 		double dTheta = Math.atan(xprime/yprime);
 		if(y <= 10){
 			dTheta += Math.PI;
