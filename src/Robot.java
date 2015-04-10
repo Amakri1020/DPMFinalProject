@@ -61,7 +61,7 @@ public class Robot {
 			e.printStackTrace();
 		}
 		//TestRoutines.mapOneBottom();
-		process(1,13*Navigation.tile,13*Navigation.tile,7*Navigation.tile,14*Navigation.tile);
+		process(1, 14*Navigation.tile, 7*Navigation.tile, 8*Navigation.tile, 13*Navigation.tile);
 		//lLoc.doLocalization();
 		/*navigator.turnTo(0);
 		try {
@@ -107,6 +107,9 @@ public class Robot {
   		odo.setY(dists[yx[0]] + US_OFFSET-30);
 		odo.setX(dists[yx[1]] + US_OFFSET-30);
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		if(odo.getX() < -23){
+			odo.setX(odo.getX() + 30);
+		}
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
