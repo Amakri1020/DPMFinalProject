@@ -2,11 +2,22 @@ public class Launcher {
 	public Launcher(){
 	}
 	
+	/**
+	 * @param shotCount
+	 * Method for shooting shotCount number of balls
+	 */
 	public void fire(int shotCount){
+		//Launching Routine
 		Robot.LAUNCHER.setSpeed(40);
 		Robot.LAUNCHER.rotate(-shotCount * 360);
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @return
+	 * Calculates position and rotation for launching
+	 */
 	public static int[] launchPosition(double x, double y) {
 		int[] result = new int[3];
 		double shot_length = 5*Navigation.tile + 18;

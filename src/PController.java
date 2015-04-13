@@ -13,16 +13,17 @@ public class PController{
 	private int distance;
 	private int filterControl;
 	
+	/**
+	 * @param bandCenter
+	 * @param bandwith
+	 * @param focus
+	 * Default Constructor
+	 */
 	public PController(int bandCenter, int bandwith, NXTRegulatedMotor focus) {
-		//Default Constructor
 		Robot.setSpeeds(0, 0);
-		
 		try {Thread.sleep(100);}catch (InterruptedException e) {}
-		
 		this.distance = 255;
-		
 		focusMotor = focus;
-		
 		Robot.RIGHT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
 		Robot.LEFT_WHEEL.setSpeed(AVOID_SPEED_STRAIGHT);
 		Robot.RIGHT_WHEEL.forward();
@@ -30,14 +31,18 @@ public class PController{
 		filterControl = 0;
 	}
 	
+	/**
+	 * @param distance
+	 * Executes the robots react for wall following based on the distance passed 
+	 */
 	public void processUSData(int distance) {
 		boolean focusMotorForward = true;
-		// rudimentary filter
+		//Rudimentary filter
 		if (distance >= 50 && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance var, however do increment the filter value
+			//Bad value, do not set the distance var, however do increment the filter value
 			filterControl++;
 		} else if (distance >= 50){
-			// true > 60, therefore set distance to > 60
+			//True > 60, therefore set distance to > 60
 			this.distance = distance;
 			
 			if (focusMotorForward == false){
@@ -45,7 +50,7 @@ public class PController{
 				filterControl = 0;
 			}
 		} else {
-			// distance went below 60, therefore reset everything.
+			//Distance went below 60, therefore reset everything.
 			filterControl = 0;
 			this.distance = distance;
 		}

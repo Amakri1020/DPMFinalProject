@@ -55,13 +55,6 @@ public class TestRoutines {
 		Robot.navigator.turnTo(90);
 		Robot.navigator.travelTo(5*Navigation.tile, 6.5*Navigation.tile);
 		
-		//Go to shooting point(DEMO target)
-		// Algorithm for X and Y  position to shoot =
-		//4*T + (  T*3-     (   shootingDist(cos(theta) or sin(theta)) -  T*2)   )
-		//4*T = distance from shooting in x and y
-		// 3*T = dimensions of shooting zone
-		//T*2 distance from top right corner of shooting zone to target in X and Y 
-		
 		Robot.navigator.travelTo(145, 145);
 		Robot.navigator.turnTo(45);
 

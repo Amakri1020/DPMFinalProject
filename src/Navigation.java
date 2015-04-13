@@ -35,7 +35,7 @@ public class Navigation extends Thread {
 	 * @param angle
 	 * Turns the robot by a number of degrees corresponding to the angle
 	 */
-	public void turnTo(double angle) { //TODO needs stopping added
+	public void turnTo(double angle) {
 		isRotating = true;
 		while(angle < 0)
 			angle += 360;
@@ -188,7 +188,7 @@ public class Navigation extends Thread {
 				thetaNow = 0;
 			
 			//If angle is not within reasonable limits, rotate robot
-			//else move forward
+			//Else move forward
 			if(Math.abs(thetaGo - thetaNow) >= Math.toRadians(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toRadians(ANGLE_ERROR)){
 				isRotating = true;
 				turnTo(Math.toDegrees(thetaGo));
@@ -204,6 +204,11 @@ public class Navigation extends Thread {
 		Robot.setSpeeds(0,0);
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * Travel to position without obstacle avoiding
+	 */
 	public void travelToBlind(double x, double y) {
 		double[] currentPosition = new double[3];
 		double hypotenuse;
@@ -273,7 +278,7 @@ public class Navigation extends Thread {
 				thetaNow = 0;
 			
 			//If angle is not within reasonable limits, rotate robot
-			//else move forward
+			//Else move forward
 			if(Math.abs(thetaGo - thetaNow) >= Math.toRadians(ANGLE_ERROR) && Math.abs(thetaGo - thetaNow) <= 2*Math.PI-Math.toRadians(ANGLE_ERROR)){
 				isRotating = true;
 				turnTo(Math.toDegrees(thetaGo));
@@ -289,6 +294,12 @@ public class Navigation extends Thread {
 		Robot.setSpeeds(0,0);
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @return
+	 * Checks if the Robot is in the starting or shooting zone and returns true or false respectively
+	 */
 	public boolean positionValid(double x, double y){
 		boolean flag = true;
 		if (x > 7*Navigation.tile && y > 7*Navigation.tile){
@@ -334,6 +345,12 @@ public class Navigation extends Thread {
 		Robot.RIGHT_WHEEL.rotate(convertDistance(Robot.WHEEL_RADIUS, distance),false);
 	}
 	
+	/**
+	 * @param radius
+	 * @param distance
+	 * @return
+	 * Calculates the amount of wheel rotation necessary to travel the given distance 
+	 */
 	private static int convertDistance(double radius, double distance){
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}

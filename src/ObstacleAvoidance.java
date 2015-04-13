@@ -11,11 +11,18 @@ public class ObstacleAvoidance {
 
 	private Odometer odo;
 	
+	/**
+	 * @param odometer
+	 * Constructor Method
+	 */
 	public ObstacleAvoidance(Odometer odometer){
 		this.odo = odometer;
 		avoiding = false;
 	}
 	
+	/**
+	 * Initiates the Obstacle Avoidance Routine
+	 */
 	public void startAvoidance(){
 		avoiding = true;
 		odo.getPosition(currentPosition, new boolean[] {true, true, true});
@@ -23,6 +30,7 @@ public class ObstacleAvoidance {
 		int rightDistance;
 		int leftDistance;
 		
+		//Check Right Sensor for Opening
 		Robot.usSensorRight.ping();
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		rightDistance = Robot.usSensorRight.getDistance();
@@ -32,6 +40,7 @@ public class ObstacleAvoidance {
 			return;
 		}
 		
+		//Check Left Sensor for Opening
 		Robot.usSensorLeft.ping();
 		try{Thread.sleep(200);}catch (InterruptedException e){}
 		leftDistance = Robot.usSensorLeft.getDistance();
@@ -41,6 +50,7 @@ public class ObstacleAvoidance {
 			return;
 		}
 		
+		//Check which way to turn
 		odo.getPosition(currentPosition, new boolean[]{true, true, true});
 		if (currentPosition[0] > currentPosition[1])
 			avoidLeft(Robot.usSensorRight, 90);
@@ -50,6 +60,12 @@ public class ObstacleAvoidance {
 		avoiding = false;
 	}
 	
+	/**
+	 * @param wallSensor
+	 * @param turn
+	 * @return
+	 * Turn the robot "turn" degrees to the right and begin following the wall using the left us sensor
+	 */
 	public boolean avoidRight(UltrasonicSensor wallSensor, double turn)
 	{
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),turn));
@@ -81,6 +97,12 @@ public class ObstacleAvoidance {
 		return true;
 	}
 	
+	/**
+	 * @param wallSensor
+	 * @param turn
+	 * @return
+	 * Turn the robot "turn" degrees to the right and begin following the wall using the left us sensor until a wall is seen
+	 */
 	public boolean avoidRightToWall(UltrasonicSensor wallSensor, double turn)
 	{
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),turn));
@@ -109,6 +131,12 @@ public class ObstacleAvoidance {
 		return true;
 	}
 	
+	/**
+	 * @param wallSensor
+	 * @param turn
+	 * @return
+	 * Turn the robot "turn" degrees to the left and begin following the wall using the right us sensor
+	 */
 	public boolean avoidLeft(UltrasonicSensor wallSensor, double turn)
 	{
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(), -turn));
@@ -142,6 +170,12 @@ public class ObstacleAvoidance {
 	}
 	
 
+	/**
+	 * @param wallSensor
+	 * @param turn
+	 * @return
+	 * Turn the robot "turn" degrees to the left and begin following the wall using the right us sensor until a wall is seen
+	 */
 	public boolean avoidLeftToWall(UltrasonicSensor wallSensor, double turn)
 	{
 		Robot.navigator.turnTo(safeAddToAngle(odo.getTheta(),-turn));
@@ -171,6 +205,12 @@ public class ObstacleAvoidance {
 		return true;
 	}
 	
+	/**
+	 * @param angle
+	 * @param add
+	 * @return
+	 * Add one angle to another while staying within the 0 to 360 degree range
+	 */
 	public static double safeAddToAngle(double angle, double add)
 	{
 		angle += add;

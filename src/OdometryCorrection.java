@@ -1,8 +1,6 @@
 import lejos.nxt.*;
 
-/* 
- * OdometryCorrection.java
- */
+//NOT USED
 
 public class OdometryCorrection extends Thread {
 	private static final long CORRECTION_PERIOD = 10;
@@ -15,14 +13,17 @@ public class OdometryCorrection extends Thread {
 	
 	public boolean correct;
 	
-	// constructor
+	/**
+	 * @param odometer
+	 * Default Constructor
+	 */
 	public OdometryCorrection(Odometer odometer) {
 		correct = false;
 		this.odometer = odometer;
 	}
 
-	// run method (required for Thread)
-	public void run() {
+	//Run method (required for Thread)
+	public void run(){
 		long correctionStart, correctionEnd;
 		
 		ColorSensor light = Robot.ls;
@@ -55,34 +56,22 @@ public class OdometryCorrection extends Thread {
 					int currY = (int) Math.round((sensorPosition[1]/Navigation.tile));
 					double errorY = (sensorPosition[1] - (currY*Navigation.tile));
 					
-					//adjust odometer readings based on the closest line to the sensor
+					//Adjust odometer readings based on the closest line to the sensor
 					if((Math.abs(errorX) < UNSAFE_CORRECTION_ERROR) ^ (Math.abs(errorY) < UNSAFE_CORRECTION_ERROR)){
 						if (Math.abs(errorX) < Math.abs(errorY)){
 							double newX = currentPosition[0] + errorX;
 							odometer.setPosition(new double[] {newX, 0, 0}, new boolean[] {true, false, false});
-							//Robot.debugSet("FIRST X: " + errorX, 0, 5, true);
 						} else {
 							double newY = currentPosition[1] + errorY;
 							odometer.setPosition(new double[] {0, newY, 0}, new boolean[] {false, true, false});
-							//Robot.debugSet("FIRST Y: " + errorY, 0, 5, true);
 						}
-						//Robot.setSpeeds(0, 0);
-						//Button.waitForAnyPress();
-						//Robot.navigator.travelTo(10, 100);
 					}
 				}
 	
-				// this ensure the odometry correction occurs only once every period
+				//This ensure the odometry correction occurs only once every period
 				correctionEnd = System.currentTimeMillis();
 				if (correctionEnd - correctionStart < CORRECTION_PERIOD) {
-					try {
-						Thread.sleep(CORRECTION_PERIOD
-								- (correctionEnd - correctionStart));
-					} catch (InterruptedException e) {
-						// there is nothing to be done here because it is not
-						// expected that the odometry correction will be
-						// interrupted by another thread
-					}
+					try {Thread.sleep(CORRECTION_PERIOD - (correctionEnd - correctionStart));} catch (InterruptedException e) {}
 				}
 			}
 		}
