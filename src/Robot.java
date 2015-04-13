@@ -43,8 +43,6 @@ public class Robot {
 		
 		odo = new Odometer();
 		odo.start();
-		odoCorr = new OdometryCorrection(odo);
-		odoCorr.start();
 		navigator = new Navigation(odo);
 		obAvoid = new ObstacleAvoidance(odo);
 		launcher = new Launcher(); 
@@ -54,28 +52,11 @@ public class Robot {
 		
 		usLoc = new USLocalizer(odo, usSensor);
 		lLoc = new LightLocalizer(odo, ls);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//TestRoutines.mapOneBottom();
+		try {Thread.sleep(1000);} catch (InterruptedException e) {}
+		
 		process(1, 14*Navigation.tile, 7*Navigation.tile, 8*Navigation.tile, 13*Navigation.tile);
-		//lLoc.doLocalization();
-		/*navigator.turnTo(0);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		TestRoutines.turnTest();
-	*/}
+	}
 	
-	
-
-
 	/**
 	 * Contains behaviour functionality for final routine
 	 */
@@ -83,26 +64,29 @@ public class Robot {
 		int count = 72;
 		int arc = 360/count;
 		
+		//Localize
 		int[] dists = usLoc.sweepFull(count);
 		int[] yx = usLoc.findLocalMinima(dists);
   		odo.setY(dists[yx[0]] + US_OFFSET-30);
 		odo.setX(dists[yx[1]] + US_OFFSET-30);
 		odo.setTheta(Math.toRadians((180 - yx[0]*arc)));
+		if(odo.getX() < -23){
+			odo.setX(odo.getX() + 30);
+		}
 		navigator.travelTo(4, 4);
 		navigator.turnTo(60);
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
-		//Button.waitForAnyPress();
-		
-		//odoCorr.correct = true;
+		//Travel to Goal Area (And go through a safer angle free in every map iteration)
 		navigator.travelTo(Navigation.tile*2, Navigation.tile*2);
 		navigator.travelTo(Navigation.tile*3.5, Navigation.tile*2.5);
 		navigator.travelTo(goalArea[0], goalArea[1]);
-		//odoCorr.correct = false;
 		
+		//Set Launching to true to avoid wall following while launching 
 		navigator.launching = true;
 		
+		//Localize
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
@@ -116,29 +100,28 @@ public class Robot {
 		navigator.turnTo(60);
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
-		
 		odo.setTheta(Math.toRadians(ObstacleAvoidance.safeAddToAngle(odo.getTheta(), 180)));
 		odo.setX(10*Navigation.tile - odo.getX());
 		odo.setY(10*Navigation.tile - odo.getY());
 		
+		//Launch 3 Balls at Target 1
 		int[] launch = Launcher.launchPosition(t1x,t1y);
 		navigator.travelTo(launch[0],launch[1]);
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
+		//Launch 3 Balls at Target 2
 		launch = Launcher.launchPosition(t2x,t2y);
 		navigator.travelTo(launch[0],launch[1]);
 		navigator.turnTo(launch[2]);
 		launcher.fire(3);
 		
+		//Return to Start
 		navigator.launching = false;
-		
-		//odoCorr.correct = true;
 		navigator.travelTo(0, 0);
-		//odoCorr.correct = false;
-		
 		navigator.launching = true;
 		
+		//Localize
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		dists = usLoc.sweepFull(count);
 		yx = usLoc.findLocalMinima(dists);
@@ -150,6 +133,7 @@ public class Robot {
 		odo.setPosition(new double[]{0, 0, 0}, new boolean[]{true, true, true});
 		lLoc.doLocalization();
 		
+		//Finish
 		navigator.travelTo(0, 0);
 		navigator.turnTo(0);
 	}
@@ -178,11 +162,11 @@ public class Robot {
 	public static void setSpeeds(double forwardSpeed, double rotationalSpeed) {
 		double leftSpeed, rightSpeed; 
 
-		//the method has been reworked to function with degrees per seconds speeds
-		leftSpeed = forwardSpeed+rotationalSpeed;
-		rightSpeed = forwardSpeed-rotationalSpeed;
+		//The method has been reworked to function with degrees per seconds speeds
+		leftSpeed = forwardSpeed + rotationalSpeed;
+		rightSpeed = forwardSpeed - rotationalSpeed;
 		
-		// set motor speeds
+		//Set motor speeds
 		if (leftSpeed > 900.0)
 			LEFT_WHEEL.setSpeed(900);
 		else
@@ -193,11 +177,11 @@ public class Robot {
 		else
 			RIGHT_WHEEL.setSpeed((int)rightSpeed);
 		
-		// set motor directions
+		//Set motor directions
 		if (leftSpeed > 0.0){
 			LEFT_WHEEL.forward();
 		} else if (leftSpeed == 0){
-			//do nothing at speed = 0
+		//Do nothing at speed = 0
 		} else {
 			LEFT_WHEEL.backward();
 			leftSpeed = -leftSpeed;
@@ -206,7 +190,7 @@ public class Robot {
 		if (rightSpeed > 0.0){
 			RIGHT_WHEEL.forward();
 		} else if (rightSpeed == 0){
-			//do nothing at speed = 0
+		//Do nothing at speed = 0
 		} else {
 			RIGHT_WHEEL.backward();
 			rightSpeed = -rightSpeed;
